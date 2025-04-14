@@ -1,14 +1,10 @@
-import { useState } from "react";
-import { Route, Switch, Link } from "wouter";
+import { useLocation } from "wouter";
+import { Route, Switch } from "wouter";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 
 function WelcomeScreen() {
-  const [, setLocation] = useState("/");
-  
-  const handleGetStarted = () => {
-    setLocation("/login");
-  };
+  const [, navigate] = useLocation();
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -27,16 +23,18 @@ function WelcomeScreen() {
             Collaborative learning platform
           </p>
           <div className="flex justify-center gap-4">
-            <Link href="/login">
-              <a className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors">
-                Login
-              </a>
-            </Link>
-            <Link href="/register">
-              <a className="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white hover:bg-opacity-90 transition-colors">
-                Sign Up
-              </a>
-            </Link>
+            <button 
+              onClick={() => navigate("/login")}
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
+            >
+              Login
+            </button>
+            <button 
+              onClick={() => navigate("/register")}
+              className="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white hover:bg-opacity-90 transition-colors"
+            >
+              Sign Up
+            </button>
           </div>
         </div>
       </div>
