@@ -1,4 +1,15 @@
-function App() {
+import { useState } from "react";
+import { Route, Switch, Link } from "wouter";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+
+function WelcomeScreen() {
+  const [, setLocation] = useState("/");
+  
+  const handleGetStarted = () => {
+    setLocation("/login");
+  };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md">
@@ -15,14 +26,31 @@ function App() {
           <p className="text-center text-gray-600 mb-6">
             Collaborative learning platform
           </p>
-          <div className="flex justify-center">
-            <button className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors">
-              Get Started
-            </button>
+          <div className="flex justify-center gap-4">
+            <Link href="/login">
+              <a className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors">
+                Login
+              </a>
+            </Link>
+            <Link href="/register">
+              <a className="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white hover:bg-opacity-90 transition-colors">
+                Sign Up
+              </a>
+            </Link>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/" component={WelcomeScreen} />
+    </Switch>
   );
 }
 
