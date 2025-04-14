@@ -5,11 +5,23 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
-import { User } from "@shared/schema";
+import type { User } from "@shared/schema";
 
 declare global {
   namespace Express {
-    interface User extends User {}
+    // Define User interface that will be used by Express
+    interface User {
+      id: number;
+      username: string;
+      email: string;
+      password: string;
+      name: string;
+      avatar: string | null;
+      createdAt: Date;
+      availability: string | null;
+      studyStyle: string | null;
+      firebaseId: string | null;
+    }
   }
 }
 

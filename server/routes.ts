@@ -3,9 +3,8 @@ import { createServer, type Server } from "http";
 import { WebSocketServer } from 'ws';
 import WebSocket from 'ws';
 import { storage } from "./storage";
-import { verifyToken } from "./firebase";
+import { setupAuth } from "./auth";
 import {
-  insertUserSchema,
   insertStudyGroupSchema,
   insertGroupMemberSchema,
   insertJoinRequestSchema,
@@ -18,32 +17,19 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
-// Middleware to verify Firebase token
-const authMiddleware = async (req: Request, res: Response, next: Function) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Unauthorized: Missing token' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    const decodedToken = await verifyToken(token);
-    
-    if (!decodedToken) {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token' });
-    }
-    
-    // Add the firebase user to the request
-    req.user = decodedToken;
-    next();
-  } catch (error) {
-    console.error('Auth middleware error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+// Middleware to check if user is authenticated
+const authMiddleware = (req: Request, res: Response, next: Function) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: 'Unauthorized: Not authenticated' });
   }
+  next();
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
+  
+  // Setup authentication
+  setupAuth(app);
   
   // WebSocket server for real-time collaboration
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
@@ -65,39 +51,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Auth routes
-  app.post('/api/auth/register', async (req, res) => {
-    try {
-      const validatedData = insertUserSchema.parse(req.body);
-      
-      // Check if username already exists
-      const existingUser = await storage.getUserByUsername(validatedData.username);
-      if (existingUser) {
-        return res.status(400).json({ message: 'Username already exists' });
-      }
-      
-      // Check if email already exists
-      const existingEmail = await storage.getUserByEmail(validatedData.email);
-      if (existingEmail) {
-        return res.status(400).json({ message: 'Email already exists' });
-      }
-      
-      const user = await storage.createUser(validatedData);
-      res.status(201).json(user);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: 'Invalid data', errors: error.errors });
-      }
-      console.error('Registration error:', error);
-      res.status(500).json({ message: 'Failed to register user' });
-    }
-  });
-
   // User routes
   app.get('/api/user/profile', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      // req.user is provided by passport
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -114,8 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch('/api/user/profile', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -145,8 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Study Group routes
   app.post('/api/groups', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -178,8 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/groups', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -211,8 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch('/api/groups/:id', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -251,8 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Join Request routes
   app.post('/api/groups/:id/join', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -309,8 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/groups/:id/join-requests', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -338,8 +290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch('/api/join-requests/:id', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -373,8 +324,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Course routes
   app.post('/api/groups/:id/courses', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -422,8 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Flashcard routes
   app.post('/api/courses/:id/flashcard-decks', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -466,8 +415,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/flashcard-decks/:id/flashcards', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -527,8 +475,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test routes
   app.post('/api/courses/:id/tests', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -541,13 +488,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Course not found' });
       }
       
-      const group = await storage.getStudyGroup(course.groupId);
-      
-      // Only the group lead can create tests
-      if (group && group.leadId !== user.id) {
-        return res.status(403).json({ message: 'Unauthorized: Only group lead can create tests' });
-      }
-      
       const validatedData = insertTestSchema.parse({
         ...req.body,
         courseId,
@@ -555,23 +495,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const test = await storage.createTest(validatedData);
-      
-      // Notify all group members about the new test
-      const members = await storage.getGroupMembers(course.groupId);
-      
-      for (const member of members) {
-        const settings = await storage.getNotificationSettings(member.userId);
-        
-        // Skip if user has disabled test reminders
-        if (settings && !settings.testReminders) continue;
-        
-        await storage.createNotification({
-          userId: member.userId,
-          type: 'test_reminder',
-          content: `New test scheduled: ${test.name} on ${new Date(test.testDate).toLocaleDateString()}`
-        });
-      }
-      
       res.status(201).json(test);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -595,8 +518,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/tests/upcoming', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -612,8 +534,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/tests/:id/results', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -628,8 +549,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const validatedData = insertTestResultSchema.parse({
         ...req.body,
-        testId,
-        userId: user.id
+        userId: user.id,
+        testId
       });
       
       const result = await storage.createTestResult(validatedData);
@@ -640,11 +561,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const userStats = await storage.getUserStats(user.id, course.groupId);
         if (userStats) {
           await storage.updateUserStats(user.id, course.groupId, {
-            testScores: userStats.testScores + result.score
+            testsCompleted: userStats.testsCompleted + 1,
+            totalPoints: userStats.totalPoints + result.score
           });
         } else {
           await storage.updateUserStats(user.id, course.groupId, {
-            testScores: result.score
+            testsCompleted: 1,
+            totalPoints: result.score
           });
         }
       }
@@ -669,26 +592,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Study group not found' });
       }
       
-      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-      const leaderboard = await storage.getLeaderboard(groupId, limit);
-      
-      // Get user details for each stats entry
-      const leaderboardWithUsers = await Promise.all(
-        leaderboard.map(async (stats) => {
-          const user = await storage.getUser(stats.userId);
-          return {
-            ...stats,
-            user: user ? {
-              id: user.id,
-              username: user.username,
-              name: user.name,
-              avatar: user.avatar
-            } : null
-          };
-        })
-      );
-      
-      res.json(leaderboardWithUsers);
+      const leaderboard = await storage.getLeaderboard(groupId);
+      res.json(leaderboard);
     } catch (error) {
       console.error('Get leaderboard error:', error);
       res.status(500).json({ message: 'Failed to get leaderboard' });
@@ -698,8 +603,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Notification routes
   app.get('/api/notifications', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
@@ -724,35 +628,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({ success: true });
     } catch (error) {
-      console.error('Mark notification error:', error);
+      console.error('Mark notification as read error:', error);
       res.status(500).json({ message: 'Failed to mark notification as read' });
     }
   });
 
-  // Notification Settings routes
+  app.delete('/api/notifications/:id', authMiddleware, async (req, res) => {
+    try {
+      const notificationId = parseInt(req.params.id);
+      const success = await storage.deleteNotification(notificationId);
+      
+      if (!success) {
+        return res.status(404).json({ message: 'Notification not found' });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Delete notification error:', error);
+      res.status(500).json({ message: 'Failed to delete notification' });
+    }
+  });
+
   app.get('/api/notification-settings', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
       
       const settings = await storage.getNotificationSettings(user.id);
-      
-      if (!settings) {
-        // Return default settings if none exist
-        return res.json({
-          userId: user.id,
-          testReminders: true,
-          newContent: true,
-          sessionReminders: true,
-          emailNotifications: true
-        });
-      }
-      
-      res.json(settings);
+      res.json(settings || {});
     } catch (error) {
       console.error('Get notification settings error:', error);
       res.status(500).json({ message: 'Failed to get notification settings' });
@@ -761,24 +667,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch('/api/notification-settings', authMiddleware, async (req, res) => {
     try {
-      const userFirebaseId = req.user.uid;
-      const user = await storage.getUserByFirebaseId(userFirebaseId);
+      const user = req.user;
       
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
       
-      // Only allow updating notification preferences
-      const allowedFields = ['testReminders', 'newContent', 'sessionReminders', 'emailNotifications'];
-      const updateData: Record<string, any> = {};
-      
-      for (const field of allowedFields) {
-        if (req.body[field] !== undefined) {
-          updateData[field] = req.body[field];
-        }
-      }
-      
-      const settings = await storage.updateNotificationSettings(user.id, updateData);
+      const settings = await storage.updateNotificationSettings(user.id, req.body);
       res.json(settings);
     } catch (error) {
       console.error('Update notification settings error:', error);
