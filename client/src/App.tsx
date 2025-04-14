@@ -1,11 +1,8 @@
-import { useLocation } from "wouter";
-import { Route, Switch } from "wouter";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
+import { useState } from "react";
 
-function WelcomeScreen() {
-  const [, navigate] = useLocation();
-  
+function App() {
+  const [page, setPage] = useState("welcome");
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md">
@@ -24,13 +21,13 @@ function WelcomeScreen() {
           </p>
           <div className="flex justify-center gap-4">
             <button 
-              onClick={() => navigate("/login")}
+              onClick={() => window.location.href = "/login"}
               className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
             >
               Login
             </button>
             <button 
-              onClick={() => navigate("/register")}
+              onClick={() => window.location.href = "/register"}
               className="px-4 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white hover:bg-opacity-90 transition-colors"
             >
               Sign Up
@@ -39,16 +36,6 @@ function WelcomeScreen() {
         </div>
       </div>
     </div>
-  );
-}
-
-function App() {
-  return (
-    <Switch>
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
-      <Route path="/" component={WelcomeScreen} />
-    </Switch>
   );
 }
 
