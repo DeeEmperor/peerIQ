@@ -1,164 +1,224 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import Sidebar from "@/components/layout/Sidebar";
-import MobileNav from "@/components/layout/MobileNav";
-import StatsOverview from "@/components/dashboard/StatsOverview";
-import StudyGroupsList from "@/components/dashboard/StudyGroupsList";
-import RecentFlashcards from "@/components/dashboard/RecentFlashcards";
-import UpcomingTests from "@/components/dashboard/UpcomingTests";
-import Leaderboard from "@/components/dashboard/Leaderboard";
-import JoinRequests from "@/components/dashboard/JoinRequests";
-import CreateGroupModal from "@/components/studygroup/CreateGroupModal";
+import { useAuth } from "@/hooks/use-auth";
+import { useState } from "react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Plus, Bell } from "lucide-react";
-import { useAuthContext } from "@/context/AuthContext";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { StatOverview } from "@/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  BookOpen,
+  Users,
+  FileText,
+  TrendingUp,
+  Menu,
+  X,
+  LogOut,
+  Settings,
+  Home,
+} from "lucide-react";
 
 export default function Dashboard() {
-  const { userProfile } = useAuthContext();
-  const [createGroupOpen, setCreateGroupOpen] = useState(false);
+  const { user, logoutMutation } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { data: statsData } = useQuery({
-    queryKey: ['/api/stats/overview'],
-    placeholderData: {
-      weeklyTime: "8.5 hrs",
-      testsCompleted: 12,
-      flashcardsCreated: 87,
-      activeGroups: 4
-    } as StatOverview
-  });
-
-  const { data: notifications } = useQuery({
-    queryKey: ['/api/notifications'],
-  });
-
-  const unreadNotifications = notifications?.filter((notif: any) => !notif.read)?.length || 0;
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
 
   return (
-    <div className="min-h-screen flex overflow-hidden bg-gray-50">
-      {/* Sidebar - only on desktop */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        {/* Mobile header */}
-        <div className="relative z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 md:hidden">
-          <div className="flex items-center justify-between px-4 h-full">
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Navigation */}
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <button 
-                className="text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-light"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              <div className="ml-4 flex items-center">
-                <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 4.75L19.25 9L12 13.25L4.75 9L12 4.75Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  <path d="M9.25 11.5L4.75 14L12 18.25L19.25 14L14.6722 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                </svg>
-                <span className="ml-2 text-primary text-xl font-semibold">StudySync</span>
+              <div className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 text-transparent bg-clip-text">
+                StudySync
               </div>
             </div>
-            <div className="flex items-center">
-              <button className="p-1 rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative">
-                <Bell className="h-6 w-6" />
-                {unreadNotifications > 0 && (
-                  <span className="absolute -top-1 -right-1 inline-flex items-center justify-center h-5 w-5 rounded-full bg-red-500 text-xs font-medium text-white">
-                    {unreadNotifications}
-                  </span>
-                )}
-              </button>
-              <div className="ml-4">
-                <Avatar className="h-8 w-8">
-                  {userProfile?.avatar ? (
-                    <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
-                  ) : (
-                    <AvatarFallback>{userProfile?.name?.charAt(0) || "U"}</AvatarFallback>
-                  )}
-                </Avatar>
+            <div className="hidden md:flex items-center space-x-4">
+              <Button variant="ghost" asChild>
+                <Link href="/" className="flex items-center space-x-1">
+                  <Home className="h-5 w-5" />
+                  <span>Dashboard</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link href="/groups" className="flex items-center space-x-1">
+                  <Users className="h-5 w-5" />
+                  <span>Study Groups</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link href="/flashcards" className="flex items-center space-x-1">
+                  <BookOpen className="h-5 w-5" />
+                  <span>Flashcards</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link href="/tests" className="flex items-center space-x-1">
+                  <FileText className="h-5 w-5" />
+                  <span>Tests</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link href="/leaderboard" className="flex items-center space-x-1">
+                  <TrendingUp className="h-5 w-5" />
+                  <span>Leaderboard</span>
+                </Link>
+              </Button>
+              <div className="flex items-center ml-4 space-x-2">
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="/settings">
+                    <Settings className="h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
               </div>
+            </div>
+            <div className="md:hidden">
+              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
             </div>
           </div>
         </div>
 
-        {/* Page Content */}
-        <main className="flex-1 relative overflow-y-auto focus:outline-none pb-16 md:pb-0">
-          {/* Dashboard Header */}
-          <div className="py-6 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-              <div className="flex space-x-3">
-                <Button 
-                  className="inline-flex items-center"
-                  onClick={() => setCreateGroupOpen(true)}
-                >
-                  <Plus className="-ml-1 mr-2 h-5 w-5" />
-                  Create Group
-                </Button>
-                <div className="relative md:hidden">
-                  <button className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-500 focus:outline-none">
-                    <Bell className="h-5 w-5" />
-                    {unreadNotifications > 0 && (
-                      <span className="absolute -top-1 -right-1 inline-flex items-center justify-center h-5 w-5 rounded-full bg-red-500 text-xs font-medium text-white">
-                        {unreadNotifications}
-                      </span>
-                    )}
-                  </button>
-                </div>
-              </div>
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link href="/" className="flex items-center space-x-2">
+                  <Home className="h-5 w-5" />
+                  <span>Dashboard</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link href="/groups" className="flex items-center space-x-2">
+                  <Users className="h-5 w-5" />
+                  <span>Study Groups</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link href="/flashcards" className="flex items-center space-x-2">
+                  <BookOpen className="h-5 w-5" />
+                  <span>Flashcards</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link href="/tests" className="flex items-center space-x-2">
+                  <FileText className="h-5 w-5" />
+                  <span>Tests</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link href="/leaderboard" className="flex items-center space-x-2">
+                  <TrendingUp className="h-5 w-5" />
+                  <span>Leaderboard</span>
+                </Link>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link href="/settings" className="flex items-center space-x-2">
+                  <Settings className="h-5 w-5" />
+                  <span>Settings</span>
+                </Link>
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start"
+                onClick={handleLogout}
+                disabled={logoutMutation.isPending}
+              >
+                <LogOut className="h-5 w-5 mr-2" />
+                <span>Logout</span>
+              </Button>
             </div>
           </div>
+        )}
+      </header>
 
-          {/* Dashboard Content */}
-          <div className="py-6 px-4 sm:px-6 lg:px-8">
-            {/* Stats Cards */}
-            <StatsOverview stats={statsData || {
-              weeklyTime: "0 hrs",
-              testsCompleted: 0,
-              flashcardsCreated: 0,
-              activeGroups: 0
-            }} />
+      {/* Dashboard Content */}
+      <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold mb-2">Welcome back, {user?.name}!</h1>
+          <p className="text-gray-600">
+            Here's your study progress and upcoming events
+          </p>
+        </div>
 
-            {/* Main Content Sections */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column: Study Groups and Flashcards */}
-              <div className="lg:col-span-2">
-                {/* My Study Groups Section */}
-                <StudyGroupsList />
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Study Groups</CardTitle>
+              <CardDescription>Your active groups</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+              <Link href="/groups" className="text-sm text-blue-600 hover:underline">
+                View all groups
+              </Link>
+            </CardContent>
+          </Card>
 
-                {/* Recent Flashcards */}
-                <RecentFlashcards />
-              </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Flashcards</CardTitle>
+              <CardDescription>Cards created</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+              <Link href="/flashcards" className="text-sm text-blue-600 hover:underline">
+                Create flashcards
+              </Link>
+            </CardContent>
+          </Card>
 
-              {/* Right Column: Upcoming Tests, Leaderboard, Join Requests */}
-              <div className="space-y-6">
-                {/* Upcoming Tests */}
-                <UpcomingTests />
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Tests</CardTitle>
+              <CardDescription>Upcoming tests</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+              <Link href="/tests" className="text-sm text-blue-600 hover:underline">
+                View tests
+              </Link>
+            </CardContent>
+          </Card>
 
-                {/* Leaderboard */}
-                <Leaderboard />
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Performance</CardTitle>
+              <CardDescription>Average score</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">-</div>
+              <Link href="/leaderboard" className="text-sm text-blue-600 hover:underline">
+                View leaderboard
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
 
-                {/* Join Requests */}
-                <JoinRequests />
-              </div>
-            </div>
+        {/* Activity Section */}
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <h2 className="text-lg font-bold mb-4">Recent Activity</h2>
+          <div className="text-center py-8 text-gray-500">
+            <p>No recent activity yet.</p>
+            <p className="mt-2">Join a study group to get started!</p>
+            <Button className="mt-4" asChild>
+              <Link href="/groups">Browse Study Groups</Link>
+            </Button>
           </div>
-        </main>
+        </div>
       </div>
-
-      {/* Mobile Navigation */}
-      <MobileNav />
-      
-      {/* Create Group Modal */}
-      <CreateGroupModal 
-        isOpen={createGroupOpen}
-        onClose={() => setCreateGroupOpen(false)}
-      />
     </div>
   );
 }
