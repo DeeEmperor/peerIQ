@@ -14,7 +14,29 @@ import {
 } from '@shared/schema';
 import { firestore } from './firebase';
 
+import { db } from "./db";
+import { eq, and, or, desc, gt } from "drizzle-orm";
+import connectPg from "connect-pg-simple";
+import session from "express-session";
+import { pool } from "./db";
+import { 
+  users, studyGroups, groupMembers, joinRequests, courses, 
+  flashcardDecks, flashcards, tests, testResults, userStats, 
+  notifications, notificationSettings 
+} from "@shared/schema";
+import type { 
+  User, InsertUser, StudyGroup, InsertStudyGroup, 
+  GroupMember, InsertGroupMember, JoinRequest, InsertJoinRequest, 
+  Course, InsertCourse, FlashcardDeck, InsertFlashcardDeck, 
+  Flashcard, InsertFlashcard, Test, InsertTest, 
+  TestResult, InsertTestResult, UserStat, 
+  Notification, InsertNotification, NotificationSetting 
+} from "@shared/schema";
+
 export interface IStorage {
+  // Session store
+  sessionStore: session.Store;
+  
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
@@ -584,4 +606,492 @@ export class MemStorage implements IStorage {
 }
 
 // Export an instance of the storage
-export const storage = new MemStorage();
+import { db } from "./db";
+import { eq, and, or, desc, gt } from "drizzle-orm";
+import connectPg from "connect-pg-simple";
+import session from "express-session";
+import { pool } from "./db";
+import { users, studyGroups, groupMembers, joinRequests, courses, 
+        flashcardDecks, flashcards, tests, testResults, userStats, 
+        notifications, notificationSettings } from "@shared/schema";
+import type { User, InsertUser, StudyGroup, InsertStudyGroup, 
+              GroupMember, InsertGroupMember, JoinRequest, InsertJoinRequest, 
+              Course, InsertCourse, FlashcardDeck, InsertFlashcardDeck, 
+              Flashcard, InsertFlashcard, Test, InsertTest, 
+              TestResult, InsertTestResult, UserStat, 
+              Notification, InsertNotification, NotificationSetting } from "@shared/schema";
+
+const PostgresSessionStore = connectPg(session);
+
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
+
+  constructor() {
+    this.sessionStore = new PostgresSessionStore({ 
+      pool, 
+      createTableIfMissing: true 
+    });
+  }
+
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async getUserByFirebaseId(firebaseId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.firebaseId, firebaseId));
+    return user;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(userData).returning();
+    return user;
+  }
+
+  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set(userData)
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  // Study Group operations
+  async createStudyGroup(groupData: InsertStudyGroup): Promise<StudyGroup> {
+    const [group] = await db.insert(studyGroups).values(groupData).returning();
+    return group;
+  }
+
+  async getStudyGroup(id: number): Promise<StudyGroup | undefined> {
+    const [group] = await db.select().from(studyGroups).where(eq(studyGroups.id, id));
+    return group;
+  }
+
+  async getStudyGroupsByUser(userId: number): Promise<StudyGroup[]> {
+    const members = await db
+      .select()
+      .from(groupMembers)
+      .where(eq(groupMembers.userId, userId));
+    
+    const groupIds = members.map(member => member.groupId);
+    
+    if (groupIds.length === 0) return [];
+    
+    const groups = await db
+      .select()
+      .from(studyGroups)
+      .where(
+        groupIds.map(id => eq(studyGroups.id, id))
+          .reduce((acc, condition) => acc ? or(acc, condition) : condition)
+      );
+    
+    return groups;
+  }
+
+  async updateStudyGroup(id: number, groupData: Partial<StudyGroup>): Promise<StudyGroup> {
+    const [group] = await db
+      .update(studyGroups)
+      .set(groupData)
+      .where(eq(studyGroups.id, id))
+      .returning();
+    return group;
+  }
+
+  async deleteStudyGroup(id: number): Promise<boolean> {
+    await db.delete(studyGroups).where(eq(studyGroups.id, id));
+    return true;
+  }
+
+  // Group Member operations
+  async addMemberToGroup(memberData: InsertGroupMember): Promise<GroupMember> {
+    const [member] = await db.insert(groupMembers).values(memberData).returning();
+    return member;
+  }
+
+  async getGroupMembers(groupId: number): Promise<GroupMember[]> {
+    return await db.select().from(groupMembers).where(eq(groupMembers.groupId, groupId));
+  }
+
+  async removeMemberFromGroup(groupId: number, userId: number): Promise<boolean> {
+    await db
+      .delete(groupMembers)
+      .where(
+        and(
+          eq(groupMembers.groupId, groupId),
+          eq(groupMembers.userId, userId)
+        )
+      );
+    return true;
+  }
+
+  async updateMemberRole(groupId: number, userId: number, role: string): Promise<GroupMember> {
+    const [member] = await db
+      .update(groupMembers)
+      .set({ role })
+      .where(
+        and(
+          eq(groupMembers.groupId, groupId),
+          eq(groupMembers.userId, userId)
+        )
+      )
+      .returning();
+    return member;
+  }
+
+  // Join Request operations
+  async createJoinRequest(requestData: InsertJoinRequest): Promise<JoinRequest> {
+    const [request] = await db.insert(joinRequests).values(requestData).returning();
+    return request;
+  }
+
+  async getJoinRequests(groupId: number): Promise<JoinRequest[]> {
+    return await db
+      .select()
+      .from(joinRequests)
+      .where(eq(joinRequests.groupId, groupId));
+  }
+
+  async getJoinRequestsByUser(userId: number): Promise<JoinRequest[]> {
+    return await db
+      .select()
+      .from(joinRequests)
+      .where(eq(joinRequests.userId, userId));
+  }
+
+  async updateJoinRequestStatus(requestId: number, status: string): Promise<JoinRequest> {
+    const [request] = await db
+      .update(joinRequests)
+      .set({ status })
+      .where(eq(joinRequests.id, requestId))
+      .returning();
+    return request;
+  }
+
+  // Course operations
+  async createCourse(courseData: InsertCourse): Promise<Course> {
+    const [course] = await db.insert(courses).values(courseData).returning();
+    return course;
+  }
+
+  async getCoursesByGroup(groupId: number): Promise<Course[]> {
+    return await db
+      .select()
+      .from(courses)
+      .where(eq(courses.groupId, groupId));
+  }
+
+  async getCourse(id: number): Promise<Course | undefined> {
+    const [course] = await db.select().from(courses).where(eq(courses.id, id));
+    return course;
+  }
+
+  async updateCourse(id: number, courseData: Partial<Course>): Promise<Course> {
+    const [course] = await db
+      .update(courses)
+      .set(courseData)
+      .where(eq(courses.id, id))
+      .returning();
+    return course;
+  }
+
+  async deleteCourse(id: number): Promise<boolean> {
+    await db.delete(courses).where(eq(courses.id, id));
+    return true;
+  }
+
+  // Flashcard Deck operations
+  async createFlashcardDeck(deckData: InsertFlashcardDeck): Promise<FlashcardDeck> {
+    const [deck] = await db.insert(flashcardDecks).values(deckData).returning();
+    return deck;
+  }
+
+  async getFlashcardDecksByCourse(courseId: number): Promise<FlashcardDeck[]> {
+    return await db
+      .select()
+      .from(flashcardDecks)
+      .where(eq(flashcardDecks.courseId, courseId));
+  }
+
+  async getFlashcardDecksByUser(userId: number): Promise<FlashcardDeck[]> {
+    return await db
+      .select()
+      .from(flashcardDecks)
+      .where(eq(flashcardDecks.createdBy, userId));
+  }
+
+  async getFlashcardDeck(id: number): Promise<FlashcardDeck | undefined> {
+    const [deck] = await db
+      .select()
+      .from(flashcardDecks)
+      .where(eq(flashcardDecks.id, id));
+    return deck;
+  }
+
+  async updateFlashcardDeck(id: number, deckData: Partial<FlashcardDeck>): Promise<FlashcardDeck> {
+    const [deck] = await db
+      .update(flashcardDecks)
+      .set(deckData)
+      .where(eq(flashcardDecks.id, id))
+      .returning();
+    return deck;
+  }
+
+  async deleteFlashcardDeck(id: number): Promise<boolean> {
+    await db.delete(flashcardDecks).where(eq(flashcardDecks.id, id));
+    return true;
+  }
+
+  // Flashcard operations
+  async createFlashcard(cardData: InsertFlashcard): Promise<Flashcard> {
+    const [card] = await db.insert(flashcards).values(cardData).returning();
+    return card;
+  }
+
+  async getFlashcardsByDeck(deckId: number): Promise<Flashcard[]> {
+    return await db
+      .select()
+      .from(flashcards)
+      .where(eq(flashcards.deckId, deckId));
+  }
+
+  async getFlashcard(id: number): Promise<Flashcard | undefined> {
+    const [card] = await db
+      .select()
+      .from(flashcards)
+      .where(eq(flashcards.id, id));
+    return card;
+  }
+
+  async updateFlashcard(id: number, cardData: Partial<Flashcard>): Promise<Flashcard> {
+    const [card] = await db
+      .update(flashcards)
+      .set(cardData)
+      .where(eq(flashcards.id, id))
+      .returning();
+    return card;
+  }
+
+  async deleteFlashcard(id: number): Promise<boolean> {
+    await db.delete(flashcards).where(eq(flashcards.id, id));
+    return true;
+  }
+
+  // Test operations
+  async createTest(testData: InsertTest): Promise<Test> {
+    const [test] = await db.insert(tests).values(testData).returning();
+    return test;
+  }
+
+  async getTestsByCourse(courseId: number): Promise<Test[]> {
+    return await db
+      .select()
+      .from(tests)
+      .where(eq(tests.courseId, courseId));
+  }
+
+  async getUpcomingTestsByUser(userId: number): Promise<Test[]> {
+    const now = new Date();
+    // This is more complex as we need to join tables
+    // Get all courses from groups the user is a member of
+    const members = await db
+      .select()
+      .from(groupMembers)
+      .where(eq(groupMembers.userId, userId));
+    
+    const groupIds = members.map(member => member.groupId);
+    
+    if (groupIds.length === 0) return [];
+    
+    const coursesList = await db
+      .select()
+      .from(courses)
+      .where(
+        groupIds.map(id => eq(courses.groupId, id))
+          .reduce((acc, condition) => acc ? or(acc, condition) : condition)
+      );
+    
+    const courseIds = coursesList.map(course => course.id);
+    
+    if (courseIds.length === 0) return [];
+    
+    return await db
+      .select()
+      .from(tests)
+      .where(
+        and(
+          courseIds.map(id => eq(tests.courseId, id))
+            .reduce((acc, condition) => acc ? or(acc, condition) : condition),
+          gt(tests.testDate, now)
+        )
+      );
+  }
+
+  async getTest(id: number): Promise<Test | undefined> {
+    const [test] = await db
+      .select()
+      .from(tests)
+      .where(eq(tests.id, id));
+    return test;
+  }
+
+  async updateTest(id: number, testData: Partial<Test>): Promise<Test> {
+    const [test] = await db
+      .update(tests)
+      .set(testData)
+      .where(eq(tests.id, id))
+      .returning();
+    return test;
+  }
+
+  async deleteTest(id: number): Promise<boolean> {
+    await db.delete(tests).where(eq(tests.id, id));
+    return true;
+  }
+
+  // Test Result operations
+  async createTestResult(resultData: InsertTestResult): Promise<TestResult> {
+    const [result] = await db.insert(testResults).values(resultData).returning();
+    return result;
+  }
+
+  async getTestResultsByTest(testId: number): Promise<TestResult[]> {
+    return await db
+      .select()
+      .from(testResults)
+      .where(eq(testResults.testId, testId));
+  }
+
+  async getTestResultsByUser(userId: number): Promise<TestResult[]> {
+    return await db
+      .select()
+      .from(testResults)
+      .where(eq(testResults.userId, userId));
+  }
+
+  async getTestResult(id: number): Promise<TestResult | undefined> {
+    const [result] = await db
+      .select()
+      .from(testResults)
+      .where(eq(testResults.id, id));
+    return result;
+  }
+
+  // User Stats operations
+  async getUserStats(userId: number, groupId: number): Promise<UserStat | undefined> {
+    const [stats] = await db
+      .select()
+      .from(userStats)
+      .where(
+        and(
+          eq(userStats.userId, userId),
+          eq(userStats.groupId, groupId)
+        )
+      );
+    return stats;
+  }
+
+  async updateUserStats(userId: number, groupId: number, statsData: Partial<UserStat>): Promise<UserStat> {
+    const existing = await this.getUserStats(userId, groupId);
+    
+    if (existing) {
+      const [stats] = await db
+        .update(userStats)
+        .set({...statsData, lastUpdated: new Date()})
+        .where(
+          and(
+            eq(userStats.userId, userId),
+            eq(userStats.groupId, groupId)
+          )
+        )
+        .returning();
+      return stats;
+    } else {
+      const [stats] = await db
+        .insert(userStats)
+        .values({userId, groupId, ...statsData})
+        .returning();
+      return stats;
+    }
+  }
+
+  async getLeaderboard(groupId: number, limit: number = 10): Promise<UserStat[]> {
+    return await db
+      .select()
+      .from(userStats)
+      .where(eq(userStats.groupId, groupId))
+      .orderBy(desc(userStats.totalPoints))
+      .limit(limit);
+  }
+
+  // Notification operations
+  async createNotification(notificationData: InsertNotification): Promise<Notification> {
+    const [notification] = await db
+      .insert(notifications)
+      .values(notificationData)
+      .returning();
+    return notification;
+  }
+
+  async getUserNotifications(userId: number): Promise<Notification[]> {
+    return await db
+      .select()
+      .from(notifications)
+      .where(eq(notifications.userId, userId))
+      .orderBy(desc(notifications.createdAt));
+  }
+
+  async markNotificationAsRead(id: number): Promise<boolean> {
+    await db
+      .update(notifications)
+      .set({read: true})
+      .where(eq(notifications.id, id));
+    return true;
+  }
+
+  async deleteNotification(id: number): Promise<boolean> {
+    await db.delete(notifications).where(eq(notifications.id, id));
+    return true;
+  }
+
+  // Notification Settings operations
+  async getNotificationSettings(userId: number): Promise<NotificationSetting | undefined> {
+    const [settings] = await db
+      .select()
+      .from(notificationSettings)
+      .where(eq(notificationSettings.userId, userId));
+    return settings;
+  }
+
+  async updateNotificationSettings(userId: number, settingsData: Partial<NotificationSetting>): Promise<NotificationSetting> {
+    const existing = await this.getNotificationSettings(userId);
+    
+    if (existing) {
+      const [settings] = await db
+        .update(notificationSettings)
+        .set(settingsData)
+        .where(eq(notificationSettings.userId, userId))
+        .returning();
+      return settings;
+    } else {
+      const [settings] = await db
+        .insert(notificationSettings)
+        .values({userId, ...settingsData})
+        .returning();
+      return settings;
+    }
+  }
+}
+
+export const storage = new DatabaseStorage();
