@@ -24,7 +24,13 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
+import { 
+  Loader2, 
+  Users, 
+  BookOpen, 
+  ActivitySquare,
+  Sparkles
+} from "lucide-react";
 
 // Define the form validation schemas
 const loginSchema = z.object({
@@ -103,16 +109,81 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Left Column - Form */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center p-8">
-        <div className="mx-auto w-full max-w-md">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-500 text-transparent bg-clip-text">
+    <div className="min-h-screen flex flex-col md:flex-row overflow-hidden">
+      {/* Left Column - Hero Section (shows on large screens) */}
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-purple-700 via-purple-600 to-violet-500 text-white p-12 flex-col justify-center items-center">
+        <div className="max-w-xl">
+          <div className="mb-8 text-center">
+            <div className="inline-block p-3 bg-white/10 rounded-2xl backdrop-blur-sm mb-6">
+              <Sparkles className="h-12 w-12 text-white" />
+            </div>
+            <h1 className="text-5xl font-bold mb-4">StudySync</h1>
+            <p className="text-xl opacity-90 mb-6">
+              Elevate your learning experience with collaborative study tools
+            </p>
+          </div>
+          
+          <div className="space-y-8">
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+              <div className="flex items-start mb-4">
+                <div className="bg-white/20 p-2 rounded-lg mr-4">
+                  <Users className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Collaborative Study Groups</h3>
+                  <p className="opacity-90">Create or join study groups to collaborate with peers in real-time</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+              <div className="flex items-start mb-4">
+                <div className="bg-white/20 p-2 rounded-lg mr-4">
+                  <BookOpen className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Smart Flashcards</h3>
+                  <p className="opacity-90">Create and share flashcards with built-in spaced repetition algorithms</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+              <div className="flex items-start mb-4">
+                <div className="bg-white/20 p-2 rounded-lg mr-4">
+                  <ActivitySquare className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Performance Tracking</h3>
+                  <p className="opacity-90">Track your study progress and see how you compare with your peers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column - Form */}
+      <div className="w-full md:w-1/2 bg-white flex flex-col justify-center p-6 md:p-12 relative">
+        {/* Mobile header - only visible on small screens */}
+        <div className="md:hidden mb-8 text-center">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-violet-500 text-transparent bg-clip-text">
             StudySync
           </h1>
-          <p className="text-gray-600 mb-8">
-            Sign in to your account or create a new one
-          </p>
+          <p className="text-gray-600">Your collaborative learning platform</p>
+        </div>
+
+        <div className="max-w-md mx-auto w-full">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {activeTab === "login" ? "Welcome back" : "Create an account"}
+            </h2>
+            <p className="text-gray-600 mt-2">
+              {activeTab === "login" 
+                ? "Sign in to your account to continue" 
+                : "Join StudySync to start collaborating"}
+            </p>
+          </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-8">
@@ -121,15 +192,9 @@ export default function AuthPage() {
             </TabsList>
 
             <TabsContent value="login">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Login</CardTitle>
-                  <CardDescription>
-                    Enter your credentials to access your account
-                  </CardDescription>
-                </CardHeader>
+              <Card className="border-0 shadow-none">
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 px-0">
                     <div className="space-y-2">
                       <Label htmlFor="username">Username</Label>
                       <Input
@@ -137,6 +202,7 @@ export default function AuthPage() {
                         type="text"
                         placeholder="johndoe"
                         {...loginForm.register("username")}
+                        className="border-gray-300 focus:border-primary"
                       />
                       {loginForm.formState.errors.username && (
                         <p className="text-sm text-red-500">
@@ -151,6 +217,7 @@ export default function AuthPage() {
                         type="password"
                         placeholder="••••••••"
                         {...loginForm.register("password")}
+                        className="border-gray-300 focus:border-primary"
                       />
                       {loginForm.formState.errors.password && (
                         <p className="text-sm text-red-500">
@@ -166,10 +233,10 @@ export default function AuthPage() {
                       </Alert>
                     )}
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex justify-end px-0">
                     <Button 
                       type="submit" 
-                      className="w-full" 
+                      className="w-full bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white" 
                       disabled={loginMutation.isPending}
                     >
                       {loginMutation.isPending ? (
@@ -178,35 +245,29 @@ export default function AuthPage() {
                           Logging in...
                         </>
                       ) : (
-                        "Login"
+                        "Log in"
                       )}
                     </Button>
                   </CardFooter>
                 </form>
               </Card>
-              <div className="mt-4 text-center text-sm">
+              <div className="mt-6 text-center text-sm">
                 <p className="text-gray-600">
                   Don't have an account?{" "}
                   <button
                     onClick={() => setActiveTab("register")}
-                    className="text-blue-600 hover:underline focus:outline-none"
+                    className="text-primary font-medium hover:underline focus:outline-none"
                   >
-                    Register
+                    Create one now
                   </button>
                 </p>
               </div>
             </TabsContent>
 
             <TabsContent value="register">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Create an account</CardTitle>
-                  <CardDescription>
-                    Enter your information to create a new account
-                  </CardDescription>
-                </CardHeader>
+              <Card className="border-0 shadow-none">
                 <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 px-0">
                     <div className="space-y-2">
                       <Label htmlFor="register-username">Username</Label>
                       <Input
@@ -214,6 +275,7 @@ export default function AuthPage() {
                         type="text"
                         placeholder="johndoe"
                         {...registerForm.register("username")}
+                        className="border-gray-300 focus:border-primary"
                       />
                       {registerForm.formState.errors.username && (
                         <p className="text-sm text-red-500">
@@ -228,6 +290,7 @@ export default function AuthPage() {
                         type="text"
                         placeholder="John Doe"
                         {...registerForm.register("name")}
+                        className="border-gray-300 focus:border-primary"
                       />
                       {registerForm.formState.errors.name && (
                         <p className="text-sm text-red-500">
@@ -242,6 +305,7 @@ export default function AuthPage() {
                         type="email"
                         placeholder="john.doe@example.com"
                         {...registerForm.register("email")}
+                        className="border-gray-300 focus:border-primary"
                       />
                       {registerForm.formState.errors.email && (
                         <p className="text-sm text-red-500">
@@ -256,6 +320,7 @@ export default function AuthPage() {
                         type="password"
                         placeholder="••••••••"
                         {...registerForm.register("password")}
+                        className="border-gray-300 focus:border-primary"
                       />
                       {registerForm.formState.errors.password && (
                         <p className="text-sm text-red-500">
@@ -264,14 +329,13 @@ export default function AuthPage() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-confirm-password">
-                        Confirm Password
-                      </Label>
+                      <Label htmlFor="register-confirm-password">Confirm Password</Label>
                       <Input
                         id="register-confirm-password"
                         type="password"
                         placeholder="••••••••"
                         {...registerForm.register("confirmPassword")}
+                        className="border-gray-300 focus:border-primary"
                       />
                       {registerForm.formState.errors.confirmPassword && (
                         <p className="text-sm text-red-500">
@@ -287,112 +351,53 @@ export default function AuthPage() {
                       </Alert>
                     )}
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex justify-end px-0">
                     <Button 
                       type="submit" 
-                      className="w-full"
+                      className="w-full bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white"
                       disabled={registerMutation.isPending}
                     >
                       {registerMutation.isPending ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Registering...
+                          Creating account...
                         </>
                       ) : (
-                        "Register"
+                        "Create account"
                       )}
                     </Button>
                   </CardFooter>
                 </form>
               </Card>
-              <div className="mt-4 text-center text-sm">
+              <div className="mt-6 text-center text-sm">
                 <p className="text-gray-600">
                   Already have an account?{" "}
                   <button
                     onClick={() => setActiveTab("login")}
-                    className="text-blue-600 hover:underline focus:outline-none"
+                    className="text-primary font-medium hover:underline focus:outline-none"
                   >
-                    Login
+                    Sign in instead
                   </button>
                 </p>
               </div>
             </TabsContent>
           </Tabs>
-        </div>
-      </div>
-
-      {/* Right Column - Hero Section */}
-      <div className="hidden md:block md:w-1/2 bg-gradient-to-b from-purple-600 to-blue-500 p-10 text-white flex flex-col justify-center">
-        <div className="max-w-md mx-auto">
-          <h2 className="text-4xl font-bold mb-6">
-            Unlock Your Study Potential
-          </h2>
-          <p className="text-xl mb-8">
-            Join StudySync to collaborate with study groups, create and share flashcards, and track your academic progress.
-          </p>
-          <div className="space-y-6">
-            <div className="flex items-start space-x-4">
-              <div className="bg-white rounded-full p-2 text-blue-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6"
-                >
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+          
+          {/* App preview section - mobile only */}
+          <div className="mt-12 md:hidden">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">Why join StudySync?</h3>
+            <div className="space-y-4">
+              <div className="p-4 border border-gray-200 rounded-lg flex items-center">
+                <Users className="h-5 w-5 text-primary mr-3" />
+                <span>Create & join study groups</span>
               </div>
-              <div>
-                <h3 className="font-bold text-xl mb-1">Collaborative Groups</h3>
-                <p>Create or join study groups to collaborate with peers.</p>
+              <div className="p-4 border border-gray-200 rounded-lg flex items-center">
+                <BookOpen className="h-5 w-5 text-primary mr-3" />
+                <span>Build collaborative flashcards</span>
               </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <div className="bg-white rounded-full p-2 text-blue-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6"
-                >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-bold text-xl mb-1">Smart Flashcards</h3>
-                <p>Create and share flashcards to improve knowledge retention.</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <div className="bg-white rounded-full p-2 text-blue-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6"
-                >
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                </svg>
-              </div>
-              <div>
-                <h3 className="font-bold text-xl mb-1">Progress Tracking</h3>
-                <p>Track your study progress and see how you compare to peers.</p>
+              <div className="p-4 border border-gray-200 rounded-lg flex items-center">
+                <ActivitySquare className="h-5 w-5 text-primary mr-3" />
+                <span>Track your study progress</span>
               </div>
             </div>
           </div>
