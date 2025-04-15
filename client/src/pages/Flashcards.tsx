@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { 
-  Plus, 
-  Search, 
-  ChevronRight, 
-  BookOpen, 
-  MoreVertical, 
-  ArrowLeft, 
+import {
+  Plus,
+  Search,
+  ChevronRight,
+  BookOpen,
+  MoreVertical,
+  ArrowLeft,
   ArrowRight,
   Edit,
   Trash,
   Share,
   CheckCircle2,
-  XCircle
+  XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -96,31 +96,36 @@ const sampleFlashcards = [
   {
     id: 1,
     question: "What is the powerhouse of the cell?",
-    answer: "The mitochondria is the powerhouse of the cell, responsible for cellular respiration and producing energy in the form of ATP.",
+    answer:
+      "The mitochondria is the powerhouse of the cell, responsible for cellular respiration and producing energy in the form of ATP.",
     mastered: true,
   },
   {
     id: 2,
     question: "What is the function of the cell membrane?",
-    answer: "The cell membrane regulates what enters and exits the cell, provides structure, and protects the cell's internal components.",
+    answer:
+      "The cell membrane regulates what enters and exits the cell, provides structure, and protects the cell's internal components.",
     mastered: false,
   },
   {
     id: 3,
     question: "What are lysosomes?",
-    answer: "Lysosomes are membrane-bound organelles containing digestive enzymes that break down waste materials and cellular debris.",
+    answer:
+      "Lysosomes are membrane-bound organelles containing digestive enzymes that break down waste materials and cellular debris.",
     mastered: true,
   },
   {
     id: 4,
     question: "What is the endoplasmic reticulum?",
-    answer: "The endoplasmic reticulum is a network of membranes throughout the cell that assists with protein and lipid synthesis.",
+    answer:
+      "The endoplasmic reticulum is a network of membranes throughout the cell that assists with protein and lipid synthesis.",
     mastered: false,
   },
   {
     id: 5,
     question: "What is the function of the Golgi apparatus?",
-    answer: "The Golgi apparatus modifies, sorts, and packages proteins and lipids for storage in the cell or release outside the cell.",
+    answer:
+      "The Golgi apparatus modifies, sorts, and packages proteins and lipids for storage in the cell or release outside the cell.",
     mastered: false,
   },
 ];
@@ -132,12 +137,13 @@ export default function Flashcards() {
   const [studyMode, setStudyMode] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  
+
   // Filter decks based on search query
-  const filteredDecks = flashcardDecks.filter(deck => 
-    deck.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    deck.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    deck.course.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDecks = flashcardDecks.filter(
+    (deck) =>
+      deck.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      deck.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      deck.course.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Handle study mode
@@ -184,7 +190,7 @@ export default function Flashcards() {
             Create and study flashcards to improve your knowledge retention
           </p>
         </div>
-        
+
         <div className="mt-4 md:mt-0">
           <Dialog>
             <DialogTrigger asChild>
@@ -197,7 +203,8 @@ export default function Flashcards() {
               <DialogHeader>
                 <DialogTitle>Create New Flashcard Deck</DialogTitle>
                 <DialogDescription>
-                  Create a new deck of flashcards to study and share with your groups.
+                  Create a new deck of flashcards to study and share with your
+                  groups.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -244,7 +251,9 @@ export default function Flashcards() {
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   >
                     <option value="">Don't share with a group</option>
-                    <option value="biology-study-group">Biology Study Group</option>
+                    <option value="biology-study-group">
+                      Biology Study Group
+                    </option>
                     <option value="advanced-physics">Advanced Physics</option>
                     <option value="organic-chemistry">Organic Chemistry</option>
                   </select>
@@ -257,7 +266,7 @@ export default function Flashcards() {
           </Dialog>
         </div>
       </div>
-      
+
       {/* Search */}
       <div className="relative mb-8">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
@@ -268,14 +277,14 @@ export default function Flashcards() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      
+
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
         <TabsList className="grid w-full md:w-1/3 grid-cols-2">
           <TabsTrigger value="my-decks">My Decks</TabsTrigger>
           <TabsTrigger value="shared">Shared with Me</TabsTrigger>
         </TabsList>
-        
+
         {/* My Decks Tab */}
         <TabsContent value="my-decks">
           {filteredDecks.length === 0 ? (
@@ -285,7 +294,9 @@ export default function Flashcards() {
                 No flashcard decks found
               </h3>
               <p className="text-gray-600 mb-4">
-                {searchQuery ? "No decks match your search." : "You haven't created any flashcard decks yet."}
+                {searchQuery
+                  ? "No decks match your search."
+                  : "You haven't created any flashcard decks yet."}
               </p>
               <Dialog>
                 <DialogTrigger asChild>
@@ -305,16 +316,27 @@ export default function Flashcards() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredDecks.map((deck) => (
-                <Card key={deck.id} className="hover:shadow-md transition-shadow">
+                <Card
+                  key={deck.id}
+                  className="hover:shadow-md transition-shadow"
+                >
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-lg font-semibold">{deck.title}</CardTitle>
-                        <CardDescription className="mt-1">{deck.description}</CardDescription>
+                        <CardTitle className="text-lg font-semibold">
+                          {deck.title}
+                        </CardTitle>
+                        <CardDescription className="mt-1">
+                          {deck.description}
+                        </CardDescription>
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -334,33 +356,37 @@ export default function Flashcards() {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
-                    
+
                     <div className="flex items-center gap-2 mt-2">
-                      <Badge variant="outline" className="bg-purple-50 text-purple-800 hover:bg-purple-50">
+                      <Badge
+                        variant="outline"
+                        className="bg-purple-50 text-purple-800 hover:bg-purple-50"
+                      >
                         {deck.course}
                       </Badge>
                       {deck.group && (
-                        <Badge variant="outline" className="bg-blue-50 text-blue-800 hover:bg-blue-50">
+                        <Badge
+                          variant="outline"
+                          className="bg-blue-50 text-blue-800 hover:bg-blue-50"
+                        >
                           {deck.group}
                         </Badge>
                       )}
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="pb-3">
                     <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
                       <div className="flex items-center">
                         <BookOpen className="h-4 w-4 mr-1" />
                         <span>{deck.cardCount} cards</span>
                       </div>
-                      <div>
-                        Last studied: {deck.lastStudied}
-                      </div>
+                      <div>Last studied: {deck.lastStudied}</div>
                     </div>
-                    
+
                     <div className="w-full bg-gray-100 rounded-full h-2.5 mb-1">
-                      <div 
-                        className="bg-gradient-to-r from-purple-500 to-violet-400 h-2.5 rounded-full" 
+                      <div
+                        className="bg-gradient-to-r from-purple-500 to-violet-400 h-2.5 rounded-full"
                         style={{ width: `${deck.masteryLevel}%` }}
                       ></div>
                     </div>
@@ -368,11 +394,11 @@ export default function Flashcards() {
                       Mastery: {deck.masteryLevel}%
                     </div>
                   </CardContent>
-                  
+
                   <CardFooter className="pt-1">
-                    <Button 
-                      variant="default" 
-                      className="w-full" 
+                    <Button
+                      variant="default"
+                      className="w-full"
                       onClick={() => startStudyMode(deck.id)}
                     >
                       Study Now
@@ -383,7 +409,7 @@ export default function Flashcards() {
             </div>
           )}
         </TabsContent>
-        
+
         {/* Shared Tab */}
         <TabsContent value="shared">
           <div className="text-center py-10">
@@ -392,12 +418,10 @@ export default function Flashcards() {
               No shared decks yet
             </h3>
             <p className="text-gray-600 mb-4">
-              When someone shares a flashcard deck with you, it will appear here.
+              When someone shares a flashcard deck with you, it will appear
+              here.
             </p>
-            <Button 
-              variant="outline" 
-              onClick={() => setActiveTab("my-decks")}
-            >
+            <Button variant="outline" onClick={() => setActiveTab("my-decks")}>
               View My Decks
             </Button>
           </div>
@@ -409,7 +433,7 @@ export default function Flashcards() {
   const renderStudyMode = () => {
     const currentCard = sampleFlashcards[currentCardIndex];
     const progress = ((currentCardIndex + 1) / sampleFlashcards.length) * 100;
-    
+
     return (
       <div className="pb-8">
         <div className="flex items-center mb-6">
@@ -418,26 +442,26 @@ export default function Flashcards() {
             Back to Decks
           </Button>
           <h2 className="text-xl font-semibold ml-4">
-            Studying: {flashcardDecks.find(d => d.id === selectedDeck)?.title}
+            Studying: {flashcardDecks.find((d) => d.id === selectedDeck)?.title}
           </h2>
         </div>
-        
+
         {/* Progress bar */}
         <div className="w-full bg-gray-100 rounded-full h-2 mb-8">
-          <div 
-            className="bg-gradient-to-r from-purple-500 to-violet-400 h-2 rounded-full transition-all duration-300 ease-out" 
+          <div
+            className="bg-gradient-to-r from-purple-500 to-violet-400 h-2 rounded-full transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-        
+
         <div className="text-center mb-4">
           <p className="text-gray-500">
             Card {currentCardIndex + 1} of {sampleFlashcards.length}
           </p>
         </div>
-        
+
         {/* Flashcard */}
-        <div 
+        <div
           className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 mb-8 cursor-pointer transition-all duration-200 hover:shadow-xl mx-auto max-w-3xl"
           style={{ minHeight: "300px" }}
           onClick={toggleAnswer}
@@ -451,12 +475,14 @@ export default function Flashcards() {
                 </Badge>
               ) : null}
             </div>
-            
+
             {!showAnswer ? (
               <div>
                 <h3 className="text-2xl font-medium mb-8">Question</h3>
                 <p className="text-xl">{currentCard.question}</p>
-                <p className="text-gray-500 mt-8 text-sm">Click to reveal answer</p>
+                <p className="text-gray-500 mt-8 text-sm">
+                  Click to reveal answer
+                </p>
               </div>
             ) : (
               <div>
@@ -466,31 +492,34 @@ export default function Flashcards() {
             )}
           </div>
         </div>
-        
+
         {/* Navigation */}
         <div className="flex justify-center space-x-4">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={prevCard}
             disabled={currentCardIndex === 0}
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Previous
           </Button>
-          
+
           {showAnswer && (
             <>
               <Button variant="outline" className="text-red-600 border-red-200">
                 <XCircle className="h-5 w-5 mr-2" />
                 Needs Review
               </Button>
-              <Button variant="outline" className="text-green-600 border-green-200">
+              <Button
+                variant="outline"
+                className="text-green-600 border-green-200"
+              >
                 <CheckCircle2 className="h-5 w-5 mr-2" />
                 Got It
               </Button>
             </>
           )}
-          
+
           <Button onClick={nextCard}>
             {currentCardIndex === sampleFlashcards.length - 1 ? (
               "Finish"
@@ -513,18 +542,16 @@ export default function Flashcards() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-500 text-transparent bg-clip-text">
-              StudySync
+              peerIQ
             </h1>
           </Link>
-          
+
           <Button asChild>
-            <Link href="/">
-              Back to Dashboard
-            </Link>
+            <Link href="/">Back to Dashboard</Link>
           </Button>
         </div>
       </header>
-      
+
       {/* Main content */}
       <main className="container mx-auto px-4 py-8">
         {studyMode ? renderStudyMode() : renderDeckList()}

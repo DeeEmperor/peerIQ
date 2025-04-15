@@ -5,9 +5,23 @@ import { useForm } from "react-hook-form";
 import { useLocation } from "wouter";
 import { useAuthContext } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
@@ -15,16 +29,23 @@ const loginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-const registerSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters").max(20, "Username must be at most 20 characters"),
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    username: z
+      .string()
+      .min(3, "Username must be at least 3 characters")
+      .max(20, "Username must be at most 20 characters"),
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Please enter a valid email"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -68,7 +89,12 @@ export default function AuthForm({ type }: AuthFormProps) {
 
   const onRegisterSubmit = async (data: RegisterFormValues) => {
     setIsSubmitting(true);
-    const success = await register(data.email, data.password, data.username, data.name);
+    const success = await register(
+      data.email,
+      data.password,
+      data.username,
+      data.name
+    );
     if (success) {
       setLocation("/dashboard");
     }
@@ -79,9 +105,26 @@ export default function AuthForm({ type }: AuthFormProps) {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <div className="flex justify-center mb-4">
-          <svg className="h-12 w-12 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 4.75L19.25 9L12 13.25L4.75 9L12 4.75Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-            <path d="M9.25 11.5L4.75 14L12 18.25L19.25 14L14.6722 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+          <svg
+            className="h-12 w-12 text-primary"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 4.75L19.25 9L12 13.25L4.75 9L12 4.75Z"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+            <path
+              d="M9.25 11.5L4.75 14L12 18.25L19.25 14L14.6722 11.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
           </svg>
         </div>
         <CardTitle className="text-2xl text-center font-bold">
@@ -90,13 +133,16 @@ export default function AuthForm({ type }: AuthFormProps) {
         <CardDescription className="text-center">
           {type === "login"
             ? "Enter your credentials to access your account"
-            : "Fill out the form to create your StudySync account"}
+            : "Fill out the form to create your peerIQ account"}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {type === "login" ? (
           <Form {...loginForm}>
-            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+            <form
+              onSubmit={loginForm.handleSubmit(onLoginSubmit)}
+              className="space-y-4"
+            >
               <FormField
                 control={loginForm.control}
                 name="email"
@@ -117,7 +163,11 @@ export default function AuthForm({ type }: AuthFormProps) {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,7 +183,10 @@ export default function AuthForm({ type }: AuthFormProps) {
           </Form>
         ) : (
           <Form {...registerForm}>
-            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+            <form
+              onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
+              className="space-y-4"
+            >
               <FormField
                 control={registerForm.control}
                 name="username"
@@ -180,7 +233,11 @@ export default function AuthForm({ type }: AuthFormProps) {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -193,7 +250,11 @@ export default function AuthForm({ type }: AuthFormProps) {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -211,11 +272,15 @@ export default function AuthForm({ type }: AuthFormProps) {
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-gray-600">
-          {type === "login" ? "Don't have an account? " : "Already have an account? "}
+          {type === "login"
+            ? "Don't have an account? "
+            : "Already have an account? "}
           <Button
             variant="link"
             className="p-0 h-auto font-normal"
-            onClick={() => setLocation(type === "login" ? "/register" : "/login")}
+            onClick={() =>
+              setLocation(type === "login" ? "/register" : "/login")
+            }
           >
             {type === "login" ? "Sign up" : "Sign in"}
           </Button>

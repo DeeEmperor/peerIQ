@@ -97,6 +97,7 @@ export interface UserStat {
   flashcardContributions: number;
   totalPoints: number;
   lastUpdated: string;
+  testsCompleted?: number;
   user?: {
     id: number;
     username: string;

@@ -21,35 +21,35 @@ export default function Sidebar() {
   };
 
   const navItems = [
-    { 
-      path: "/dashboard", 
-      label: "Dashboard", 
-      icon: <LayoutDashboard className="h-5 w-5 mr-3" /> 
+    {
+      path: "/dashboard",
+      label: "Dashboard",
+      icon: <LayoutDashboard className="h-5 w-5 mr-3" />,
     },
-    { 
-      path: "/groups", 
-      label: "My Groups", 
-      icon: <Users className="h-5 w-5 mr-3" /> 
+    {
+      path: "/groups",
+      label: "My Groups",
+      icon: <Users className="h-5 w-5 mr-3" />,
     },
-    { 
-      path: "/flashcards", 
-      label: "Flashcards", 
-      icon: <BookOpen className="h-5 w-5 mr-3" /> 
+    {
+      path: "/flashcards",
+      label: "Flashcards",
+      icon: <BookOpen className="h-5 w-5 mr-3" />,
     },
-    { 
-      path: "/tests", 
-      label: "Tests", 
-      icon: <FileCheck className="h-5 w-5 mr-3" /> 
+    {
+      path: "/tests",
+      label: "Tests",
+      icon: <FileCheck className="h-5 w-5 mr-3" />,
     },
-    { 
-      path: "/leaderboard", 
-      label: "Leaderboard", 
-      icon: <BarChart3 className="h-5 w-5 mr-3" /> 
+    {
+      path: "/leaderboard",
+      label: "Leaderboard",
+      icon: <BarChart3 className="h-5 w-5 mr-3" />,
     },
-    { 
-      path: "/settings", 
-      label: "Settings", 
-      icon: <Settings className="h-5 w-5 mr-3" /> 
+    {
+      path: "/settings",
+      label: "Settings",
+      icon: <Settings className="h-5 w-5 mr-3" />,
     },
   ];
 
@@ -59,11 +59,30 @@ export default function Sidebar() {
         <div className="flex flex-col h-0 flex-1">
           <div className="flex items-center h-16 flex-shrink-0 px-4 bg-primary">
             <div className="flex items-center">
-              <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4.75L19.25 9L12 13.25L4.75 9L12 4.75Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                <path d="M9.25 11.5L4.75 14L12 18.25L19.25 14L14.6722 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+              <svg
+                className="h-8 w-8 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 4.75L19.25 9L12 13.25L4.75 9L12 4.75Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <path
+                  d="M9.25 11.5L4.75 14L12 18.25L19.25 14L14.6722 11.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
               </svg>
-              <span className="ml-2 text-white text-xl font-semibold">StudySync</span>
+              <span className="ml-2 text-white text-xl font-semibold">
+                peerIQ
+              </span>
             </div>
           </div>
           <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar">
@@ -89,14 +108,21 @@ export default function Sidebar() {
               <div>
                 <Avatar className="h-10 w-10">
                   {userProfile?.avatar ? (
-                    <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
+                    <AvatarImage
+                      src={userProfile.avatar}
+                      alt={userProfile.name}
+                    />
                   ) : (
-                    <AvatarFallback>{userProfile?.name?.charAt(0) || "U"}</AvatarFallback>
+                    <AvatarFallback>
+                      {userProfile?.name?.charAt(0) || "U"}
+                    </AvatarFallback>
                   )}
                 </Avatar>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">{userProfile?.name || "User"}</p>
+                <p className="text-sm font-medium text-gray-700">
+                  {userProfile?.name || "User"}
+                </p>
                 <Button
                   variant="ghost"
                   className="text-xs font-medium text-gray-500 hover:text-gray-700 p-0 h-auto"

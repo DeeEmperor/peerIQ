@@ -30,12 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -272,7 +267,7 @@ export default function Leaderboard() {
   const [selectedTimeframe, setSelectedTimeframe] = useState("month");
   const [selectedGroup, setSelectedGroup] = useState("all");
   const [activeTab, setActiveTab] = useState("leaderboard");
-  
+
   // Get user initials for avatar fallback
   const getInitials = (name: string = "") => {
     return name
@@ -281,11 +276,11 @@ export default function Leaderboard() {
       .join("")
       .toUpperCase();
   };
-  
+
   // Render the badge component based on user's badge
   const renderBadge = (badge: string | null) => {
     if (!badge) return null;
-    
+
     if (badge === "gold") {
       return (
         <Badge className="bg-amber-100 text-amber-800 border-amber-200 absolute -top-2 -right-2 z-10">
@@ -308,10 +303,10 @@ export default function Leaderboard() {
         </Badge>
       );
     }
-    
+
     return null;
   };
-  
+
   // Change indicator for user rank
   const renderRankChange = (change: string) => {
     if (change === "up") {
@@ -321,7 +316,7 @@ export default function Leaderboard() {
     }
     return null;
   };
-  
+
   // Render leaderboard tab
   const renderLeaderboard = () => (
     <div>
@@ -346,10 +341,7 @@ export default function Leaderboard() {
         </div>
         <div className="flex-1">
           <label className="text-sm font-medium mb-1 block">Study Group</label>
-          <Select
-            value={selectedGroup}
-            onValueChange={setSelectedGroup}
-          >
+          <Select value={selectedGroup} onValueChange={setSelectedGroup}>
             <SelectTrigger>
               <SelectValue placeholder="Select group" />
             </SelectTrigger>
@@ -362,33 +354,48 @@ export default function Leaderboard() {
           </Select>
         </div>
       </div>
-      
+
       {/* Top 3 cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {leaderboardData.users.slice(0, 3).map((user) => (
           <Card key={user.id} className="overflow-hidden">
-            <div className={`h-2 ${
-              user.rank === 1 ? 'bg-yellow-400' :
-              user.rank === 2 ? 'bg-gray-400' :
-              'bg-amber-700'
-            }`} />
+            <div
+              className={`h-2 ${
+                user.rank === 1
+                  ? "bg-yellow-400"
+                  : user.rank === 2
+                  ? "bg-gray-400"
+                  : "bg-amber-700"
+              }`}
+            />
             <CardContent className="pt-6">
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
-                  <div className={`absolute inset-0 rounded-full -m-1 ${
-                    user.rank === 1 ? 'bg-gradient-to-br from-yellow-300 to-amber-500' :
-                    user.rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
-                    'bg-gradient-to-br from-amber-600 to-amber-800'
-                  }`} style={{ transform: 'scale(1.1)', opacity: 0.5 }} />
+                  <div
+                    className={`absolute inset-0 rounded-full -m-1 ${
+                      user.rank === 1
+                        ? "bg-gradient-to-br from-yellow-300 to-amber-500"
+                        : user.rank === 2
+                        ? "bg-gradient-to-br from-gray-300 to-gray-500"
+                        : "bg-gradient-to-br from-amber-600 to-amber-800"
+                    }`}
+                    style={{ transform: "scale(1.1)", opacity: 0.5 }}
+                  />
                   <Avatar className="h-20 w-20 border-4 border-white relative">
                     <AvatarImage src={user.avatar || ""} alt={user.name} />
-                    <AvatarFallback className="text-lg">{getInitials(user.name)}</AvatarFallback>
+                    <AvatarFallback className="text-lg">
+                      {getInitials(user.name)}
+                    </AvatarFallback>
                   </Avatar>
-                  <div className={`absolute -bottom-2 -right-2 h-8 w-8 rounded-full flex items-center justify-center text-white ${
-                    user.rank === 1 ? 'bg-yellow-400' :
-                    user.rank === 2 ? 'bg-gray-400' :
-                    'bg-amber-700'
-                  }`}>
+                  <div
+                    className={`absolute -bottom-2 -right-2 h-8 w-8 rounded-full flex items-center justify-center text-white ${
+                      user.rank === 1
+                        ? "bg-yellow-400"
+                        : user.rank === 2
+                        ? "bg-gray-400"
+                        : "bg-amber-700"
+                    }`}
+                  >
                     {user.rank}
                   </div>
                 </div>
@@ -412,7 +419,7 @@ export default function Leaderboard() {
           </Card>
         ))}
       </div>
-      
+
       {/* Main leaderboard table */}
       <Card>
         <CardHeader className="pb-0">
@@ -420,9 +427,15 @@ export default function Leaderboard() {
           <CardDescription>
             {selectedTimeframe === "week" && "This week's top performers"}
             {selectedTimeframe === "month" && "This month's top performers"}
-            {selectedTimeframe === "semester" && "This semester's top performers"}
+            {selectedTimeframe === "semester" &&
+              "This semester's top performers"}
             {selectedTimeframe === "all" && "All-time top performers"}
-            {selectedGroup !== "all" && ` in ${leaderboardData.groups.find(g => g.id.toString() === selectedGroup)?.name}`}
+            {selectedGroup !== "all" &&
+              ` in ${
+                leaderboardData.groups.find(
+                  (g) => g.id.toString() === selectedGroup
+                )?.name
+              }`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -433,11 +446,21 @@ export default function Leaderboard() {
                   <th className="py-3 px-4 text-left">Rank</th>
                   <th className="py-3 px-4 text-left">Student</th>
                   <th className="py-3 px-4 text-right">Points</th>
-                  <th className="py-3 px-4 text-right hidden md:table-cell">Study Hours</th>
-                  <th className="py-3 px-4 text-right hidden md:table-cell">Flashcards</th>
-                  <th className="py-3 px-4 text-right hidden md:table-cell">Test Score</th>
-                  <th className="py-3 px-4 text-right hidden lg:table-cell">Contributions</th>
-                  <th className="py-3 px-4 text-right hidden lg:table-cell">Streak</th>
+                  <th className="py-3 px-4 text-right hidden md:table-cell">
+                    Study Hours
+                  </th>
+                  <th className="py-3 px-4 text-right hidden md:table-cell">
+                    Flashcards
+                  </th>
+                  <th className="py-3 px-4 text-right hidden md:table-cell">
+                    Test Score
+                  </th>
+                  <th className="py-3 px-4 text-right hidden lg:table-cell">
+                    Contributions
+                  </th>
+                  <th className="py-3 px-4 text-right hidden lg:table-cell">
+                    Streak
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -445,12 +468,15 @@ export default function Leaderboard() {
                   <tr key={user.id} className="border-b hover:bg-gray-50">
                     <td className="py-4 px-4">
                       <div className="flex items-center">
-                        <span 
+                        <span
                           className={`flex items-center justify-center h-7 w-7 rounded-full mr-2 text-white font-medium ${
-                            user.rank === 1 ? 'bg-yellow-400' :
-                            user.rank === 2 ? 'bg-gray-400' :
-                            user.rank === 3 ? 'bg-amber-700' :
-                            'bg-gray-200 text-gray-700'
+                            user.rank === 1
+                              ? "bg-yellow-400"
+                              : user.rank === 2
+                              ? "bg-gray-400"
+                              : user.rank === 3
+                              ? "bg-amber-700"
+                              : "bg-gray-200 text-gray-700"
                           }`}
                         >
                           {user.rank}
@@ -462,19 +488,34 @@ export default function Leaderboard() {
                       <div className="flex items-center">
                         <div className="relative">
                           <Avatar className="h-8 w-8 mr-3">
-                            <AvatarImage src={user.avatar || ""} alt={user.name} />
-                            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                            <AvatarImage
+                              src={user.avatar || ""}
+                              alt={user.name}
+                            />
+                            <AvatarFallback>
+                              {getInitials(user.name)}
+                            </AvatarFallback>
                           </Avatar>
                           {renderBadge(user.badge)}
                         </div>
                         <span className="font-medium">{user.name}</span>
                       </div>
                     </td>
-                    <td className="py-4 px-4 text-right font-semibold">{user.points}</td>
-                    <td className="py-4 px-4 text-right hidden md:table-cell">{user.studyHours}h</td>
-                    <td className="py-4 px-4 text-right hidden md:table-cell">{user.flashcardsMastered}</td>
-                    <td className="py-4 px-4 text-right hidden md:table-cell">{user.testAvgScore}%</td>
-                    <td className="py-4 px-4 text-right hidden lg:table-cell">{user.groupContributions}</td>
+                    <td className="py-4 px-4 text-right font-semibold">
+                      {user.points}
+                    </td>
+                    <td className="py-4 px-4 text-right hidden md:table-cell">
+                      {user.studyHours}h
+                    </td>
+                    <td className="py-4 px-4 text-right hidden md:table-cell">
+                      {user.flashcardsMastered}
+                    </td>
+                    <td className="py-4 px-4 text-right hidden md:table-cell">
+                      {user.testAvgScore}%
+                    </td>
+                    <td className="py-4 px-4 text-right hidden lg:table-cell">
+                      {user.groupContributions}
+                    </td>
                     <td className="py-4 px-4 text-right hidden lg:table-cell">
                       <div className="flex items-center justify-end">
                         <Calendar className="h-4 w-4 mr-1 text-purple-500" />
@@ -488,7 +529,7 @@ export default function Leaderboard() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Group statistics */}
       <div className="mt-8">
         <h3 className="text-lg font-semibold mb-4">Study Group Statistics</h3>
@@ -502,29 +543,38 @@ export default function Leaderboard() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center">
                     <Users className="h-4 w-4 text-gray-500 mr-1" />
-                    <span className="text-sm text-gray-500">{group.members} members</span>
+                    <span className="text-sm text-gray-500">
+                      {group.members} members
+                    </span>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-gray-500 mr-1" />
-                    <span className="text-sm text-gray-500">Avg: {group.averageScore}%</span>
+                    <span className="text-sm text-gray-500">
+                      Avg: {group.averageScore}%
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={group.topPerformer.avatar || ""} alt={group.topPerformer.name} />
-                    <AvatarFallback>{getInitials(group.topPerformer.name)}</AvatarFallback>
+                    <AvatarImage
+                      src={group.topPerformer.avatar || ""}
+                      alt={group.topPerformer.name}
+                    />
+                    <AvatarFallback>
+                      {getInitials(group.topPerformer.name)}
+                    </AvatarFallback>
                   </Avatar>
                   <div>
-                    <div className="text-sm font-medium">{group.topPerformer.name}</div>
+                    <div className="text-sm font-medium">
+                      {group.topPerformer.name}
+                    </div>
                     <div className="text-xs text-gray-500">Top Performer</div>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="border-t pt-3">
                 <Button variant="outline" size="sm" className="w-full" asChild>
-                  <Link href={`/groups/${group.id}`}>
-                    View Group
-                  </Link>
+                  <Link href={`/groups/${group.id}`}>View Group</Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -533,7 +583,7 @@ export default function Leaderboard() {
       </div>
     </div>
   );
-  
+
   // Render personal stats tab
   const renderPersonalStats = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -548,10 +598,18 @@ export default function Leaderboard() {
             <div className="flex flex-col md:flex-row md:items-center gap-6 mb-6">
               <div className="flex-1">
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-sm text-gray-500">Rank {leaderboardData.personalStats.rank} of {leaderboardData.personalStats.totalUsers}</div>
-                  <div className="text-sm font-medium">Top {leaderboardData.personalStats.percentile}%</div>
+                  <div className="text-sm text-gray-500">
+                    Rank {leaderboardData.personalStats.rank} of{" "}
+                    {leaderboardData.personalStats.totalUsers}
+                  </div>
+                  <div className="text-sm font-medium">
+                    Top {leaderboardData.personalStats.percentile}%
+                  </div>
                 </div>
-                <Progress value={leaderboardData.personalStats.percentile} className="h-2 mb-1" />
+                <Progress
+                  value={leaderboardData.personalStats.percentile}
+                  className="h-2 mb-1"
+                />
                 <div className="flex justify-between text-xs text-gray-500">
                   <span>Beginner</span>
                   <span>Intermediate</span>
@@ -562,19 +620,25 @@ export default function Leaderboard() {
                 <div className="inline-flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-violet-500 p-[3px]">
                   <div className="rounded-full bg-white h-full w-full flex items-center justify-center">
                     <div>
-                      <div className="text-3xl font-bold bg-gradient-to-br from-purple-600 to-violet-500 text-transparent bg-clip-text">{leaderboardData.personalStats.points}</div>
+                      <div className="text-3xl font-bold bg-gradient-to-br from-purple-600 to-violet-500 text-transparent bg-clip-text">
+                        {leaderboardData.personalStats.points}
+                      </div>
                       <div className="text-xs text-gray-500">POINTS</div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gray-50 p-4 rounded-lg flex flex-col sm:flex-row items-center sm:justify-between">
               <div className="mb-4 sm:mb-0">
                 <div className="text-center sm:text-left">
-                  <span className="text-sm text-gray-500">Points to rank up</span>
-                  <div className="text-2xl font-bold">{leaderboardData.personalStats.pointsToNextRank}</div>
+                  <span className="text-sm text-gray-500">
+                    Points to rank up
+                  </span>
+                  <div className="text-2xl font-bold">
+                    {leaderboardData.personalStats.pointsToNextRank}
+                  </div>
                 </div>
               </div>
               <div className="space-y-1 text-center sm:text-right">
@@ -597,7 +661,7 @@ export default function Leaderboard() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Weekly activity */}
         <Card>
           <CardHeader>
@@ -608,7 +672,7 @@ export default function Leaderboard() {
             <div className="h-40 flex items-end justify-between pt-6">
               {leaderboardData.personalStats.weeklyActivity.map((day, i) => (
                 <div key={i} className="flex flex-col items-center">
-                  <div 
+                  <div
                     className="w-12 rounded-t-md bg-gradient-to-t from-purple-600 to-violet-500"
                     style={{ height: `${(day.hours / 5) * 120}px` }}
                   ></div>
@@ -617,12 +681,27 @@ export default function Leaderboard() {
               ))}
             </div>
             <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-              <div>Total this week: {leaderboardData.personalStats.weeklyActivity.reduce((sum, day) => sum + day.hours, 0).toFixed(1)}h</div>
-              <div>Daily average: {(leaderboardData.personalStats.weeklyActivity.reduce((sum, day) => sum + day.hours, 0) / 7).toFixed(1)}h</div>
+              <div>
+                Total this week:{" "}
+                {leaderboardData.personalStats.weeklyActivity
+                  .reduce((sum, day) => sum + day.hours, 0)
+                  .toFixed(1)}
+                h
+              </div>
+              <div>
+                Daily average:{" "}
+                {(
+                  leaderboardData.personalStats.weeklyActivity.reduce(
+                    (sum, day) => sum + day.hours,
+                    0
+                  ) / 7
+                ).toFixed(1)}
+                h
+              </div>
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Areas to improve */}
         <div>
           <div className="flex items-center justify-between mb-4">
@@ -636,8 +715,9 @@ export default function Leaderboard() {
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-[250px] text-sm">
-                    These are suggestions for how you can improve your rank on the leaderboard.
-                    Focus on these areas to earn more points and climb the rankings.
+                    These are suggestions for how you can improve your rank on
+                    the leaderboard. Focus on these areas to earn more points
+                    and climb the rankings.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -649,17 +729,25 @@ export default function Leaderboard() {
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center mb-2">
                     <h4 className="font-medium">{area.area}</h4>
-                    <Badge variant="outline" className="bg-purple-50 text-purple-800">
+                    <Badge
+                      variant="outline"
+                      className="bg-purple-50 text-purple-800"
+                    >
                       +{(area.target - area.current) * 20} pts potential
                     </Badge>
                   </div>
-                  <div className="text-sm text-gray-600 mb-3">{area.description}</div>
+                  <div className="text-sm text-gray-600 mb-3">
+                    {area.description}
+                  </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Current: {area.current}</span>
                       <span>Target: {area.target}</span>
                     </div>
-                    <Progress value={(area.current / area.target) * 100} className="h-2" />
+                    <Progress
+                      value={(area.current / area.target) * 100}
+                      className="h-2"
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -667,7 +755,7 @@ export default function Leaderboard() {
           </div>
         </div>
       </div>
-      
+
       {/* Side column - achievements and badges */}
       <div className="space-y-6">
         {/* Achievements */}
@@ -677,18 +765,24 @@ export default function Leaderboard() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-gray-100">
-              {leaderboardData.personalStats.recentAchievements.map((achievement, i) => (
-                <div key={i} className="p-4 flex items-start gap-3">
-                  <div className="rounded-full bg-purple-100 p-2 text-purple-600">
-                    <Award className="h-5 w-5" />
+              {leaderboardData.personalStats.recentAchievements.map(
+                (achievement, i) => (
+                  <div key={i} className="p-4 flex items-start gap-3">
+                    <div className="rounded-full bg-purple-100 p-2 text-purple-600">
+                      <Award className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">{achievement.title}</div>
+                      <div className="text-sm text-gray-600">
+                        {achievement.description}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {achievement.date}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="font-medium">{achievement.title}</div>
-                    <div className="text-sm text-gray-600">{achievement.description}</div>
-                    <div className="text-xs text-gray-500 mt-1">{achievement.date}</div>
-                  </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </CardContent>
           <CardFooter className="border-t">
@@ -697,7 +791,7 @@ export default function Leaderboard() {
             </Button>
           </CardFooter>
         </Card>
-        
+
         {/* Rank badges */}
         <Card>
           <CardHeader>
@@ -733,7 +827,7 @@ export default function Leaderboard() {
                 <div className="text-xs text-gray-500">800+ pts</div>
               </div>
             </div>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="w-full mt-4">
@@ -751,7 +845,7 @@ export default function Leaderboard() {
       </div>
     </div>
   );
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -759,29 +853,29 @@ export default function Leaderboard() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-500 text-transparent bg-clip-text">
-              StudySync
+              peerIQ
             </h1>
           </Link>
-          
+
           <Button asChild>
-            <Link href="/">
-              Back to Dashboard
-            </Link>
+            <Link href="/">Back to Dashboard</Link>
           </Button>
         </div>
       </header>
-      
+
       {/* Main content */}
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Performance Analytics</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Performance Analytics
+            </h2>
             <p className="text-gray-600">
               Track your progress and compare with other students
             </p>
           </div>
         </div>
-        
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <TabsList className="grid w-full md:w-1/3 grid-cols-2">
             <TabsTrigger value="leaderboard">
@@ -793,11 +887,9 @@ export default function Leaderboard() {
               Your Stats
             </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="leaderboard">
-            {renderLeaderboard()}
-          </TabsContent>
-          
+
+          <TabsContent value="leaderboard">{renderLeaderboard()}</TabsContent>
+
           <TabsContent value="personal-stats">
             {renderPersonalStats()}
           </TabsContent>

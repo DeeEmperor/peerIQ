@@ -37,7 +37,8 @@ const myGroups = [
     joined: true,
     nextSession: "Tomorrow at 3:00 PM",
     courseCount: 3,
-    image: "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=687&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=687&auto=format&fit=crop",
   },
   {
     id: 2,
@@ -47,7 +48,8 @@ const myGroups = [
     joined: true,
     nextSession: "Friday at 5:00 PM",
     courseCount: 2,
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=870&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=870&auto=format&fit=crop",
   },
   {
     id: 3,
@@ -57,7 +59,8 @@ const myGroups = [
     joined: true,
     nextSession: "Monday at 4:00 PM",
     courseCount: 4,
-    image: "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=870&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=870&auto=format&fit=crop",
   },
 ];
 
@@ -69,7 +72,8 @@ const discoveryGroups = [
     members: 25,
     joined: false,
     createdAt: "2 weeks ago",
-    image: "https://images.unsplash.com/photo-1617854818583-09e7f077a156?q=80&w=870&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1617854818583-09e7f077a156?q=80&w=870&auto=format&fit=crop",
   },
   {
     id: 5,
@@ -78,7 +82,8 @@ const discoveryGroups = [
     members: 18,
     joined: false,
     createdAt: "3 days ago",
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=870&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=870&auto=format&fit=crop",
   },
   {
     id: 6,
@@ -87,7 +92,8 @@ const discoveryGroups = [
     members: 10,
     joined: false,
     createdAt: "1 month ago",
-    image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=873&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=873&auto=format&fit=crop",
   },
   {
     id: 7,
@@ -96,23 +102,26 @@ const discoveryGroups = [
     members: 22,
     joined: false,
     createdAt: "5 days ago",
-    image: "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1471&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1471&auto=format&fit=crop",
   },
 ];
 
 export default function StudyGroups() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("my-groups");
-  
+
   // Filter groups based on search query
-  const filteredMyGroups = myGroups.filter(group => 
-    group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    group.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredMyGroups = myGroups.filter(
+    (group) =>
+      group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      group.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
-  const filteredDiscoveryGroups = discoveryGroups.filter(group => 
-    group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    group.description.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredDiscoveryGroups = discoveryGroups.filter(
+    (group) =>
+      group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      group.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -122,28 +131,28 @@ export default function StudyGroups() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-500 text-transparent bg-clip-text">
-              StudySync
+              peerIQ
             </h1>
           </Link>
-          
+
           <Button asChild>
-            <Link href="/">
-              Back to Dashboard
-            </Link>
+            <Link href="/">Back to Dashboard</Link>
           </Button>
         </div>
       </header>
-      
+
       {/* Main content */}
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Study Groups</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Study Groups
+            </h2>
             <p className="text-gray-600">
               Create or join study groups to collaborate with peers
             </p>
           </div>
-          
+
           <div className="mt-4 md:mt-0">
             <Dialog>
               <DialogTrigger asChild>
@@ -156,8 +165,8 @@ export default function StudyGroups() {
                 <DialogHeader>
                   <DialogTitle>Create New Study Group</DialogTitle>
                   <DialogDescription>
-                    Fill in the details to create a new study group. 
-                    Other students will be able to discover and join your group.
+                    Fill in the details to create a new study group. Other
+                    students will be able to discover and join your group.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
@@ -172,7 +181,10 @@ export default function StudyGroups() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <label htmlFor="description" className="text-sm font-medium">
+                    <label
+                      htmlFor="description"
+                      className="text-sm font-medium"
+                    >
                       Description
                     </label>
                     <textarea
@@ -190,7 +202,9 @@ export default function StudyGroups() {
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     >
                       <option value="public">Public - Anyone can join</option>
-                      <option value="private">Private - By invitation only</option>
+                      <option value="private">
+                        Private - By invitation only
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -201,7 +215,7 @@ export default function StudyGroups() {
             </Dialog>
           </div>
         </div>
-        
+
         {/* Search & Filter Section */}
         <div className="relative mb-8">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
@@ -212,14 +226,14 @@ export default function StudyGroups() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        
+
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <TabsList className="grid w-full md:w-1/3 grid-cols-2">
             <TabsTrigger value="my-groups">My Groups</TabsTrigger>
             <TabsTrigger value="discover">Discover</TabsTrigger>
           </TabsList>
-          
+
           {/* My Groups Tab */}
           <TabsContent value="my-groups">
             {filteredMyGroups.length === 0 ? (
@@ -229,10 +243,12 @@ export default function StudyGroups() {
                   No groups found
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  {searchQuery ? "No groups match your search." : "You haven't joined any study groups yet."}
+                  {searchQuery
+                    ? "No groups match your search."
+                    : "You haven't joined any study groups yet."}
                 </p>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setActiveTab("discover")}
                 >
                   Discover Groups
@@ -241,7 +257,10 @@ export default function StudyGroups() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredMyGroups.map((group) => (
-                  <Card key={group.id} className="overflow-hidden hover:shadow-md transition-shadow">
+                  <Card
+                    key={group.id}
+                    className="overflow-hidden hover:shadow-md transition-shadow"
+                  >
                     <div className="relative h-48">
                       <img
                         src={group.image}
@@ -250,16 +269,22 @@ export default function StudyGroups() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
                         <div className="p-4 text-white">
-                          <h3 className="font-semibold text-xl">{group.name}</h3>
+                          <h3 className="font-semibold text-xl">
+                            {group.name}
+                          </h3>
                           <div className="flex items-center mt-1">
                             <Users className="h-4 w-4 mr-1" />
-                            <span className="text-sm">{group.members} members</span>
+                            <span className="text-sm">
+                              {group.members} members
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
                     <CardContent className="p-4">
-                      <p className="text-gray-600 line-clamp-2 mb-4">{group.description}</p>
+                      <p className="text-gray-600 line-clamp-2 mb-4">
+                        {group.description}
+                      </p>
                       <div className="flex items-center text-sm text-gray-500 mb-2">
                         <Calendar className="h-4 w-4 mr-2 text-purple-500" />
                         <span>{group.courseCount} courses</span>
@@ -271,9 +296,7 @@ export default function StudyGroups() {
                     </CardContent>
                     <CardFooter className="px-4 py-3 bg-gray-50 border-t flex justify-between">
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={`/groups/${group.id}`}>
-                          View Details
-                        </Link>
+                        <Link href={`/groups/${group.id}`}>View Details</Link>
                       </Button>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -284,7 +307,9 @@ export default function StudyGroups() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem>Schedule Meeting</DropdownMenuItem>
                           <DropdownMenuItem>Invite Members</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">Leave Group</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600">
+                            Leave Group
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </CardFooter>
@@ -293,7 +318,7 @@ export default function StudyGroups() {
               </div>
             )}
           </TabsContent>
-          
+
           {/* Discover Tab */}
           <TabsContent value="discover">
             {filteredDiscoveryGroups.length === 0 ? (
@@ -303,7 +328,9 @@ export default function StudyGroups() {
                   No groups found
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  {searchQuery ? "No groups match your search." : "There are no groups available to join."}
+                  {searchQuery
+                    ? "No groups match your search."
+                    : "There are no groups available to join."}
                 </p>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -323,7 +350,10 @@ export default function StudyGroups() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredDiscoveryGroups.map((group) => (
-                  <Card key={group.id} className="overflow-hidden hover:shadow-md transition-shadow">
+                  <Card
+                    key={group.id}
+                    className="overflow-hidden hover:shadow-md transition-shadow"
+                  >
                     <div className="relative h-48">
                       <img
                         src={group.image}
@@ -332,16 +362,22 @@ export default function StudyGroups() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
                         <div className="p-4 text-white">
-                          <h3 className="font-semibold text-xl">{group.name}</h3>
+                          <h3 className="font-semibold text-xl">
+                            {group.name}
+                          </h3>
                           <div className="flex items-center mt-1">
                             <Users className="h-4 w-4 mr-1" />
-                            <span className="text-sm">{group.members} members</span>
+                            <span className="text-sm">
+                              {group.members} members
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
                     <CardContent className="p-4">
-                      <p className="text-gray-600 line-clamp-2 mb-4">{group.description}</p>
+                      <p className="text-gray-600 line-clamp-2 mb-4">
+                        {group.description}
+                      </p>
                       <div className="flex items-center text-sm text-gray-500">
                         <Clock className="h-4 w-4 mr-2 text-purple-500" />
                         <span>Created {group.createdAt}</span>
@@ -349,13 +385,9 @@ export default function StudyGroups() {
                     </CardContent>
                     <CardFooter className="px-4 py-3 bg-gray-50 border-t flex justify-between">
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={`/groups/${group.id}`}>
-                          View Details
-                        </Link>
+                        <Link href={`/groups/${group.id}`}>View Details</Link>
                       </Button>
-                      <Button size="sm">
-                        Request to Join
-                      </Button>
+                      <Button size="sm">Request to Join</Button>
                     </CardFooter>
                   </Card>
                 ))}

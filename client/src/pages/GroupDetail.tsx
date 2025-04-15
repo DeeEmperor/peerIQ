@@ -62,8 +62,10 @@ import {
 const groupData = {
   id: 1,
   name: "Biology 101 Study Group",
-  description: "A collaborative study group for Biology 101 students. We focus on understanding the core concepts of cell biology, genetics, and plant biology through active discussion and knowledge sharing.",
-  image: "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=687&auto=format&fit=crop",
+  description:
+    "A collaborative study group for Biology 101 students. We focus on understanding the core concepts of cell biology, genetics, and plant biology through active discussion and knowledge sharing.",
+  image:
+    "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=687&auto=format&fit=crop",
   members: [
     {
       id: 1,
@@ -111,7 +113,8 @@ const groupData = {
       id: 1,
       name: "Michael Brown",
       avatar: "https://i.pravatar.cc/150?img=10",
-      message: "I'm taking Biology 101 this semester and would love to join your study group!",
+      message:
+        "I'm taking Biology 101 this semester and would love to join your study group!",
       requestedAt: "2 days ago",
     },
     {
@@ -205,7 +208,8 @@ const groupData = {
         name: "Alex Johnson",
         avatar: "https://i.pravatar.cc/150?img=5",
       },
-      message: "I've gone through the first part about cellular respiration. The diagrams on page 128 are really helpful!",
+      message:
+        "I've gone through the first part about cellular respiration. The diagrams on page 128 are really helpful!",
       timestamp: "10:18 AM",
     },
     {
@@ -215,7 +219,8 @@ const groupData = {
         name: "John Doe",
         avatar: null,
       },
-      message: "I created some flashcards for the key terms in that chapter. I'll share them with the group later today.",
+      message:
+        "I created some flashcards for the key terms in that chapter. I'll share them with the group later today.",
       timestamp: "10:22 AM",
     },
     {
@@ -225,7 +230,8 @@ const groupData = {
         name: "Sam Wilson",
         avatar: "https://i.pravatar.cc/150?img=8",
       },
-      message: "That would be great! I'm still struggling with the electron transport chain concept.",
+      message:
+        "That would be great! I'm still struggling with the electron transport chain concept.",
       timestamp: "10:25 AM",
     },
     {
@@ -235,7 +241,8 @@ const groupData = {
         name: "Jane Smith",
         avatar: "https://i.pravatar.cc/150?img=26",
       },
-      message: "I found a great YouTube video explaining that. I'll post the link in our resources section.",
+      message:
+        "I found a great YouTube video explaining that. I'll post the link in our resources section.",
       timestamp: "10:30 AM",
     },
   ],
@@ -244,10 +251,10 @@ const groupData = {
 export default function GroupDetail() {
   const params = useParams();
   const groupId = params.id;
-  
+
   const [activeTab, setActiveTab] = useState("overview");
   const [message, setMessage] = useState("");
-  
+
   // Get user initials for avatar fallback
   const getInitials = (name: string = "") => {
     return name
@@ -256,7 +263,7 @@ export default function GroupDetail() {
       .join("")
       .toUpperCase();
   };
-  
+
   // Role display components
   const RoleBadge = ({ role }: { role: string }) => {
     if (role === "owner") {
@@ -264,7 +271,10 @@ export default function GroupDetail() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 ml-2">
+              <Badge
+                variant="outline"
+                className="bg-amber-50 text-amber-700 border-amber-200 ml-2"
+              >
                 <Crown className="h-3 w-3 mr-1" />
                 Owner
               </Badge>
@@ -280,7 +290,10 @@ export default function GroupDetail() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 ml-2">
+              <Badge
+                variant="outline"
+                className="bg-blue-50 text-blue-700 border-blue-200 ml-2"
+              >
                 <Shield className="h-3 w-3 mr-1" />
                 Admin
               </Badge>
@@ -294,7 +307,7 @@ export default function GroupDetail() {
     }
     return null;
   };
-  
+
   // Handle message sending
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -303,19 +316,19 @@ export default function GroupDetail() {
       setMessage("");
     }
   };
-  
+
   // Handle approving join request
   const handleApproveJoinRequest = (requestId: number) => {
     // Here we would send the approval to the server
     console.log(`Approved request ${requestId}`);
   };
-  
+
   // Handle rejecting join request
   const handleRejectJoinRequest = (requestId: number) => {
     // Here we would send the rejection to the server
     console.log(`Rejected request ${requestId}`);
   };
-  
+
   // Render Overview tab
   const renderOverview = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -328,26 +341,33 @@ export default function GroupDetail() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">{groupData.description}</p>
-            
+
             <div className="mt-4 grid grid-cols-3 gap-4 text-center">
               <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="text-2xl font-semibold text-gray-900">{groupData.members.length}</div>
+                <div className="text-2xl font-semibold text-gray-900">
+                  {groupData.members.length}
+                </div>
                 <div className="text-sm text-gray-500">Members</div>
               </div>
               <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="text-2xl font-semibold text-gray-900">{groupData.courses.length}</div>
+                <div className="text-2xl font-semibold text-gray-900">
+                  {groupData.courses.length}
+                </div>
                 <div className="text-sm text-gray-500">Courses</div>
               </div>
               <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="text-2xl font-semibold text-gray-900">
-                  {groupData.courses.reduce((total, course) => total + course.flashcardDecks, 0)}
+                  {groupData.courses.reduce(
+                    (total, course) => total + course.flashcardDecks,
+                    0
+                  )}
                 </div>
                 <div className="text-sm text-gray-500">Flashcard Decks</div>
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Recent activity card */}
         <Card>
           <CardHeader className="pb-2">
@@ -358,14 +378,21 @@ export default function GroupDetail() {
               {groupData.recentActivity.map((activity) => (
                 <div key={activity.id} className="flex items-start gap-4 p-4">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={activity.avatar || ""} alt={activity.user} />
-                    <AvatarFallback>{getInitials(activity.user)}</AvatarFallback>
+                    <AvatarImage
+                      src={activity.avatar || ""}
+                      alt={activity.user}
+                    />
+                    <AvatarFallback>
+                      {getInitials(activity.user)}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 space-y-1">
                     <p className="text-sm font-medium">
                       <span className="font-semibold">{activity.user}</span>{" "}
                       {activity.action}
-                      {activity.item && <span className="font-medium"> "{activity.item}"</span>}
+                      {activity.item && (
+                        <span className="font-medium"> "{activity.item}"</span>
+                      )}
                     </p>
                     <p className="text-sm text-gray-500">{activity.time}</p>
                   </div>
@@ -374,7 +401,7 @@ export default function GroupDetail() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Courses section */}
         <div>
           <div className="flex items-center justify-between mb-4">
@@ -404,7 +431,10 @@ export default function GroupDetail() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <label htmlFor="courseDescription" className="text-sm font-medium">
+                    <label
+                      htmlFor="courseDescription"
+                      className="text-sm font-medium"
+                    >
                       Description
                     </label>
                     <textarea
@@ -420,7 +450,7 @@ export default function GroupDetail() {
               </DialogContent>
             </Dialog>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {groupData.courses.map((course) => (
               <Card key={course.id}>
@@ -443,28 +473,36 @@ export default function GroupDetail() {
                   </div>
                 </CardContent>
                 <CardFooter className="pt-0">
-                  <Button variant="outline" size="sm" className="w-full">View Course</Button>
+                  <Button variant="outline" size="sm" className="w-full">
+                    View Course
+                  </Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
         </div>
       </div>
-      
+
       {/* Side column - upcoming and members */}
       <div className="space-y-6">
         {/* Quick actions */}
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" className="flex flex-1 flex-col items-center justify-center py-4 h-auto">
+          <Button
+            variant="outline"
+            className="flex flex-1 flex-col items-center justify-center py-4 h-auto"
+          >
             <Calendar className="h-6 w-6 mb-2" />
             <span>Schedule Session</span>
           </Button>
-          <Button variant="outline" className="flex flex-1 flex-col items-center justify-center py-4 h-auto">
+          <Button
+            variant="outline"
+            className="flex flex-1 flex-col items-center justify-center py-4 h-auto"
+          >
             <UserPlus className="h-6 w-6 mb-2" />
             <span>Invite Members</span>
           </Button>
         </div>
-        
+
         {/* Upcoming sessions */}
         <Card>
           <CardHeader className="pb-2">
@@ -505,7 +543,7 @@ export default function GroupDetail() {
             )}
           </CardContent>
         </Card>
-        
+
         {/* Members card */}
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
@@ -522,8 +560,13 @@ export default function GroupDetail() {
                 <div key={member.id} className="flex items-center gap-4 p-4">
                   <div className="relative">
                     <Avatar>
-                      <AvatarImage src={member.avatar || ""} alt={member.name} />
-                      <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
+                      <AvatarImage
+                        src={member.avatar || ""}
+                        alt={member.name}
+                      />
+                      <AvatarFallback>
+                        {getInitials(member.name)}
+                      </AvatarFallback>
                     </Avatar>
                     {member.isOnline && (
                       <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-white"></span>
@@ -534,7 +577,9 @@ export default function GroupDetail() {
                       <p className="text-sm font-medium">{member.name}</p>
                       <RoleBadge role={member.role} />
                     </div>
-                    <p className="text-xs text-gray-500">Joined {member.joinedAt}</p>
+                    <p className="text-xs text-gray-500">
+                      Joined {member.joinedAt}
+                    </p>
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -549,7 +594,9 @@ export default function GroupDetail() {
                         <>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>Change Role</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">Remove from Group</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600">
+                            Remove from Group
+                          </DropdownMenuItem>
                         </>
                       )}
                     </DropdownMenuContent>
@@ -559,59 +606,70 @@ export default function GroupDetail() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Join requests - for admins/owners only */}
-        {(groupData.members.find(m => m.id === 1)?.role === "owner" || 
-          groupData.members.find(m => m.id === 1)?.role === "admin") && 
+        {(groupData.members.find((m) => m.id === 1)?.role === "owner" ||
+          groupData.members.find((m) => m.id === 1)?.role === "admin") &&
           groupData.joinRequests.length > 0 && (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>Join Requests ({groupData.joinRequests.length})</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="divide-y divide-gray-100">
-                {groupData.joinRequests.map((request) => (
-                  <div key={request.id} className="p-4">
-                    <div className="flex items-center gap-4 mb-2">
-                      <Avatar>
-                        <AvatarImage src={request.avatar || ""} alt={request.name} />
-                        <AvatarFallback>{getInitials(request.name)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium">{request.name}</p>
-                        <p className="text-xs text-gray-500">Requested {request.requestedAt}</p>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>
+                  Join Requests ({groupData.joinRequests.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="divide-y divide-gray-100">
+                  {groupData.joinRequests.map((request) => (
+                    <div key={request.id} className="p-4">
+                      <div className="flex items-center gap-4 mb-2">
+                        <Avatar>
+                          <AvatarImage
+                            src={request.avatar || ""}
+                            alt={request.name}
+                          />
+                          <AvatarFallback>
+                            {getInitials(request.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{request.name}</p>
+                          <p className="text-xs text-gray-500">
+                            Requested {request.requestedAt}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">
+                        {request.message}
+                      </p>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          onClick={() => handleApproveJoinRequest(request.id)}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => handleRejectJoinRequest(request.id)}
+                        >
+                          <X className="h-4 w-4 mr-1" />
+                          Decline
+                        </Button>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-3">{request.message}</p>
-                    <div className="flex space-x-2">
-                      <Button 
-                        size="sm" 
-                        className="w-full" 
-                        onClick={() => handleApproveJoinRequest(request.id)}
-                      >
-                        <Check className="h-4 w-4 mr-1" />
-                        Approve
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="w-full" 
-                        onClick={() => handleRejectJoinRequest(request.id)}
-                      >
-                        <X className="h-4 w-4 mr-1" />
-                        Decline
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
       </div>
     </div>
   );
-  
+
   // Render Chat tab
   const renderChat = () => (
     <div className="bg-white rounded-lg shadow overflow-hidden h-[calc(100vh-240px)] flex flex-col">
@@ -621,7 +679,7 @@ export default function GroupDetail() {
           <div className="flex items-center space-x-2">
             <h3 className="font-medium">Group Chat</h3>
             <Badge variant="outline" className="text-green-600">
-              {groupData.members.filter(m => m.isOnline).length} online
+              {groupData.members.filter((m) => m.isOnline).length} online
             </Badge>
           </div>
           <Button variant="ghost" size="sm">
@@ -630,13 +688,16 @@ export default function GroupDetail() {
           </Button>
         </div>
       </div>
-      
+
       {/* Chat messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {groupData.chatMessages.map((msg) => (
           <div key={msg.id} className="flex items-start gap-3">
             <Avatar className="h-8 w-8 flex-shrink-0">
-              <AvatarImage src={msg.sender.avatar || ""} alt={msg.sender.name} />
+              <AvatarImage
+                src={msg.sender.avatar || ""}
+                alt={msg.sender.name}
+              />
               <AvatarFallback>{getInitials(msg.sender.name)}</AvatarFallback>
             </Avatar>
             <div>
@@ -649,7 +710,7 @@ export default function GroupDetail() {
           </div>
         ))}
       </div>
-      
+
       {/* Chat input */}
       <div className="border-t p-4">
         <div className="flex items-center gap-2">
@@ -667,26 +728,36 @@ export default function GroupDetail() {
       </div>
     </div>
   );
-  
+
   // Render Members tab
   const renderMembers = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Group Members ({groupData.members.length})</h3>
+        <h3 className="text-lg font-semibold">
+          Group Members ({groupData.members.length})
+        </h3>
         <Button variant="outline" size="sm">
           <UserPlus className="h-4 w-4 mr-2" />
           Invite Members
         </Button>
       </div>
-      
+
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="min-w-full divide-y divide-gray-200">
           <div className="bg-gray-50 py-3 px-6">
             <div className="grid grid-cols-12 gap-2">
-              <div className="col-span-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</div>
-              <div className="col-span-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</div>
-              <div className="col-span-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</div>
-              <div className="col-span-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</div>
+              <div className="col-span-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Member
+              </div>
+              <div className="col-span-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Role
+              </div>
+              <div className="col-span-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Joined
+              </div>
+              <div className="col-span-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </div>
             </div>
           </div>
           <div className="bg-white divide-y divide-gray-200">
@@ -697,15 +768,22 @@ export default function GroupDetail() {
                     <div className="flex items-center">
                       <div className="relative flex-shrink-0">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={member.avatar || ""} alt={member.name} />
-                          <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
+                          <AvatarImage
+                            src={member.avatar || ""}
+                            alt={member.name}
+                          />
+                          <AvatarFallback>
+                            {getInitials(member.name)}
+                          </AvatarFallback>
                         </Avatar>
                         {member.isOnline && (
                           <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-white"></span>
                         )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{member.name}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {member.name}
+                        </div>
                         <div className="text-sm text-gray-500">
                           {member.isOnline ? "Online" : "Offline"}
                         </div>
@@ -714,12 +792,18 @@ export default function GroupDetail() {
                   </div>
                   <div className="col-span-2">
                     {member.role === "owner" ? (
-                      <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                      <Badge
+                        variant="outline"
+                        className="bg-amber-50 text-amber-700 border-amber-200"
+                      >
                         <Crown className="h-3 w-3 mr-1" />
                         Owner
                       </Badge>
                     ) : member.role === "admin" ? (
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      <Badge
+                        variant="outline"
+                        className="bg-blue-50 text-blue-700 border-blue-200"
+                      >
                         <Shield className="h-3 w-3 mr-1" />
                         Admin
                       </Badge>
@@ -727,7 +811,9 @@ export default function GroupDetail() {
                       <span className="text-sm text-gray-500">Member</span>
                     )}
                   </div>
-                  <div className="col-span-3 text-sm text-gray-500">{member.joinedAt}</div>
+                  <div className="col-span-3 text-sm text-gray-500">
+                    {member.joinedAt}
+                  </div>
                   <div className="col-span-2 text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -742,9 +828,13 @@ export default function GroupDetail() {
                           <>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
-                              {member.role === "admin" ? "Remove Admin Rights" : "Make Admin"}
+                              {member.role === "admin"
+                                ? "Remove Admin Rights"
+                                : "Make Admin"}
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">Remove from Group</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">
+                              Remove from Group
+                            </DropdownMenuItem>
                           </>
                         )}
                       </DropdownMenuContent>
@@ -758,7 +848,7 @@ export default function GroupDetail() {
       </div>
     </div>
   );
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -766,18 +856,16 @@ export default function GroupDetail() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-500 text-transparent bg-clip-text">
-              StudySync
+              peerIQ
             </h1>
           </Link>
-          
+
           <Button asChild>
-            <Link href="/groups">
-              Back to Groups
-            </Link>
+            <Link href="/groups">Back to Groups</Link>
           </Button>
         </div>
       </header>
-      
+
       {/* Hero section */}
       <div className="bg-gradient-to-r from-purple-600 to-violet-500 text-white">
         <div className="container mx-auto px-4 py-8">
@@ -785,13 +873,17 @@ export default function GroupDetail() {
             <div>
               <h2 className="text-3xl font-bold">{groupData.name}</h2>
               <p className="mt-2 text-white/80">
-                {groupData.members.length} members • {groupData.courses.length} courses
+                {groupData.members.length} members • {groupData.courses.length}{" "}
+                courses
               </p>
             </div>
             <div className="mt-4 md:mt-0 flex space-x-3">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" className="bg-white/20 hover:bg-white/30">
+                  <Button
+                    variant="secondary"
+                    className="bg-white/20 hover:bg-white/30"
+                  >
                     <MoreVertical className="h-4 w-4 mr-2" />
                     Options
                   </Button>
@@ -818,7 +910,10 @@ export default function GroupDetail() {
               </DropdownMenu>
               <div className="flex -space-x-2 overflow-hidden">
                 {groupData.members.slice(0, 4).map((member) => (
-                  <Avatar key={member.id} className="inline-block h-8 w-8 rounded-full ring-2 ring-white">
+                  <Avatar
+                    key={member.id}
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+                  >
                     <AvatarImage src={member.avatar || ""} alt={member.name} />
                     <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
                   </Avatar>
@@ -831,18 +926,31 @@ export default function GroupDetail() {
               </div>
             </div>
           </div>
-          
+
           {/* Tabs */}
           <div className="mt-8">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <TabsList className="bg-white/20 text-white">
-                <TabsTrigger value="overview" className="data-[state=active]:bg-white/20">
+                <TabsTrigger
+                  value="overview"
+                  className="data-[state=active]:bg-white/20"
+                >
                   Overview
                 </TabsTrigger>
-                <TabsTrigger value="chat" className="data-[state=active]:bg-white/20">
+                <TabsTrigger
+                  value="chat"
+                  className="data-[state=active]:bg-white/20"
+                >
                   Chat
                 </TabsTrigger>
-                <TabsTrigger value="members" className="data-[state=active]:bg-white/20">
+                <TabsTrigger
+                  value="members"
+                  className="data-[state=active]:bg-white/20"
+                >
                   Members
                 </TabsTrigger>
               </TabsList>
@@ -850,16 +958,16 @@ export default function GroupDetail() {
           </div>
         </div>
       </div>
-      
+
       {/* Main content */}
       <main className="container mx-auto px-4 py-8">
-        <TabsContent value="overview" forceMount={activeTab === "overview"}>
+        <TabsContent value="overview" forceMount={true}>
           {renderOverview()}
         </TabsContent>
-        <TabsContent value="chat" forceMount={activeTab === "chat"}>
+        <TabsContent value="chat" forceMount={true}>
           {renderChat()}
         </TabsContent>
-        <TabsContent value="members" forceMount={activeTab === "members"}>
+        <TabsContent value="members" forceMount={true}>
           {renderMembers()}
         </TabsContent>
       </main>

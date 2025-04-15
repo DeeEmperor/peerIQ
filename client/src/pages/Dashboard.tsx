@@ -51,7 +51,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-violet-500 text-transparent bg-clip-text mr-2">
-              StudySync
+              peerIQ
             </h1>
           </div>
           

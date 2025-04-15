@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Redirect } from 'wouter';
+import { useState } from "react";
+import { Redirect } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -17,19 +17,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Loader2, 
-  Users, 
-  BookOpen, 
+import {
+  Loader2,
+  Users,
+  BookOpen,
   ActivitySquare,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 
 // Define the form validation schemas
@@ -42,26 +37,28 @@ const loginSchema = z.object({
   }),
 });
 
-const registerSchema = z.object({
-  username: z.string().min(3, {
-    message: "Username must be at least 3 characters.",
-  }),
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
-  confirmPassword: z.string().min(6, {
-    message: "Confirm password must be at least 6 characters.",
-  }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    username: z.string().min(3, {
+      message: "Username must be at least 3 characters.",
+    }),
+    name: z.string().min(2, {
+      message: "Name must be at least 2 characters.",
+    }),
+    email: z.string().email({
+      message: "Please enter a valid email address.",
+    }),
+    password: z.string().min(6, {
+      message: "Password must be at least 6 characters.",
+    }),
+    confirmPassword: z.string().min(6, {
+      message: "Confirm password must be at least 6 characters.",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -117,12 +114,12 @@ export default function AuthPage() {
             <div className="inline-block p-3 bg-white/10 rounded-2xl backdrop-blur-sm mb-6">
               <Sparkles className="h-12 w-12 text-white" />
             </div>
-            <h1 className="text-5xl font-bold mb-4">StudySync</h1>
+            <h1 className="text-5xl font-bold mb-4">peerIQ</h1>
             <p className="text-xl opacity-90 mb-6">
               Elevate your learning experience with collaborative study tools
             </p>
           </div>
-          
+
           <div className="space-y-8">
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
               <div className="flex items-start mb-4">
@@ -130,12 +127,17 @@ export default function AuthPage() {
                   <Users className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg">Collaborative Study Groups</h3>
-                  <p className="opacity-90">Create or join study groups to collaborate with peers in real-time</p>
+                  <h3 className="font-bold text-lg">
+                    Collaborative Study Groups
+                  </h3>
+                  <p className="opacity-90">
+                    Create or join study groups to collaborate with peers in
+                    real-time
+                  </p>
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
               <div className="flex items-start mb-4">
                 <div className="bg-white/20 p-2 rounded-lg mr-4">
@@ -143,11 +145,14 @@ export default function AuthPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg">Smart Flashcards</h3>
-                  <p className="opacity-90">Create and share flashcards with built-in spaced repetition algorithms</p>
+                  <p className="opacity-90">
+                    Create and share flashcards with built-in spaced repetition
+                    algorithms
+                  </p>
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
               <div className="flex items-start mb-4">
                 <div className="bg-white/20 p-2 rounded-lg mr-4">
@@ -155,7 +160,10 @@ export default function AuthPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg">Performance Tracking</h3>
-                  <p className="opacity-90">Track your study progress and see how you compare with your peers</p>
+                  <p className="opacity-90">
+                    Track your study progress and see how you compare with your
+                    peers
+                  </p>
                 </div>
               </div>
             </div>
@@ -168,7 +176,7 @@ export default function AuthPage() {
         {/* Mobile header - only visible on small screens */}
         <div className="md:hidden mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-violet-500 text-transparent bg-clip-text">
-            StudySync
+            peerIQ
           </h1>
           <p className="text-gray-600">Your collaborative learning platform</p>
         </div>
@@ -179,13 +187,17 @@ export default function AuthPage() {
               {activeTab === "login" ? "Welcome back" : "Create an account"}
             </h2>
             <p className="text-gray-600 mt-2">
-              {activeTab === "login" 
-                ? "Sign in to your account to continue" 
-                : "Join StudySync to start collaborating"}
+              {activeTab === "login"
+                ? "Sign in to your account to continue"
+                : "Join peerIQ to start collaborating"}
             </p>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2 mb-8">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="register">Register</TabsTrigger>
@@ -234,9 +246,9 @@ export default function AuthPage() {
                     )}
                   </CardContent>
                   <CardFooter className="flex justify-end px-0">
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white" 
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white"
                       disabled={loginMutation.isPending}
                     >
                       {loginMutation.isPending ? (
@@ -329,7 +341,9 @@ export default function AuthPage() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-confirm-password">Confirm Password</Label>
+                      <Label htmlFor="register-confirm-password">
+                        Confirm Password
+                      </Label>
                       <Input
                         id="register-confirm-password"
                         type="password"
@@ -339,21 +353,25 @@ export default function AuthPage() {
                       />
                       {registerForm.formState.errors.confirmPassword && (
                         <p className="text-sm text-red-500">
-                          {registerForm.formState.errors.confirmPassword.message}
+                          {
+                            registerForm.formState.errors.confirmPassword
+                              .message
+                          }
                         </p>
                       )}
                     </div>
                     {registerMutation.error && (
                       <Alert variant="destructive">
                         <AlertDescription>
-                          {registerMutation.error.message || "Registration failed"}
+                          {registerMutation.error.message ||
+                            "Registration failed"}
                         </AlertDescription>
                       </Alert>
                     )}
                   </CardContent>
                   <CardFooter className="flex justify-end px-0">
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className="w-full bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white"
                       disabled={registerMutation.isPending}
                     >
@@ -382,10 +400,12 @@ export default function AuthPage() {
               </div>
             </TabsContent>
           </Tabs>
-          
+
           {/* App preview section - mobile only */}
           <div className="mt-12 md:hidden">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">Why join StudySync?</h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">
+              Why join peerIQ?
+            </h3>
             <div className="space-y-4">
               <div className="p-4 border border-gray-200 rounded-lg flex items-center">
                 <Users className="h-5 w-5 text-primary mr-3" />

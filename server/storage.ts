@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { eq, and, or, desc, gt } from "drizzle-orm";
+import { eq, and, or, desc, gt, inArray } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import session from "express-session";
 import { pool } from "./db";
@@ -33,6 +33,7 @@ export interface IStorage {
   getUserByFirebaseId(firebaseId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, user: Partial<User>): Promise<User>;
+
 
   // Study Group operations
   createStudyGroup(group: InsertStudyGroup): Promise<StudyGroup>;
@@ -82,6 +83,7 @@ export interface IStorage {
   getTest(id: number): Promise<Test | undefined>;
   updateTest(id: number, test: Partial<Test>): Promise<Test>;
   deleteTest(id: number): Promise<boolean>;
+  //testsCompleted(userId: number, groupId: number, stats: Partial<UserStat>): Promise<UserStat>;
 
   // Test Result operations
   createTestResult(result: InsertTestResult): Promise<TestResult>;
@@ -180,7 +182,7 @@ export class DatabaseStorage implements IStorage {
       .where(
         or(
           eq(studyGroups.leadId, userId),
-          studyGroups.id.in(memberGroupIds.map(g => g.groupId))
+          inArray(studyGroups.id, memberGroupIds.map(g => g.groupId))
         )
       );
     
@@ -472,7 +474,7 @@ export class DatabaseStorage implements IStorage {
     const groupCourses = await db
       .select({ courseId: courses.id })
       .from(courses)
-      .where(courses.groupId.in(memberGroups.map(g => g.groupId)));
+      .where(inArray(courses.groupId, memberGroups.map(g => g.groupId)));
     
     // Get upcoming tests for those courses
     const now = new Date();
@@ -481,7 +483,7 @@ export class DatabaseStorage implements IStorage {
       .from(tests)
       .where(
         and(
-          tests.courseId.in(groupCourses.map(c => c.courseId)),
+          inArray(tests.courseId, groupCourses.map(c => c.courseId)),
           gt(tests.testDate, now)
         )
       )
@@ -563,6 +565,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserStats(userId: number, groupId: number, statsData: Partial<UserStat>): Promise<UserStat> {
+    const validStatsData = statsData;
     // First check if stats exist
     const existingStats = await this.getUserStats(userId, groupId);
     
@@ -642,7 +645,7 @@ export class DatabaseStorage implements IStorage {
   async markNotificationAsRead(id: number): Promise<boolean> {
     const result = await db
       .update(notifications)
-      .set({ isRead: true })
+      .set({ read: true })
       .where(eq(notifications.id, id))
       .returning({ id: notifications.id });
     
