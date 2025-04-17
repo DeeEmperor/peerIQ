@@ -6,7 +6,43 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import type { User } from "@shared/schema";
+import { auth } from "./firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
+
+//this function signs in a new user with email and password
+export async function signup(email: string, password: string, confirmPassword: string) {
+  if (password !== confirmPassword) {
+    throw new Error("Passwords do not match");
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new Error("Invalid email address");
+  }
+
+  if (password.length < 6) {
+    throw new Error("Password must be at least 6 characters long");
+  }
+  //check for uppercase
+  if (!/[A-Z]/.test(password)) {
+    throw new Error("Password must contain at least one uppercase letter");
+  }
+  //check for at least one number
+  if (!/[0-9]/.test(password)) {
+    throw new Error("Password must contain at least one number");
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("User created:", user.uid);
+    return user;
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw error;
+  }
+}
 declare global {
   namespace Express {
     // Define User interface that will be used by Express

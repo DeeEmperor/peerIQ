@@ -7,6 +7,7 @@ import { ProtectedRoute } from "./lib/protected-route";
 import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
 
+const name = "David";
 // Page components
 import Dashboard from "@/pages/Dashboard";
 import StudyGroups from "@/pages/StudyGroups";
@@ -24,7 +25,7 @@ function App() {
           <Switch>
             {/* Auth routes */}
             <Route path="/auth" component={AuthPage} />
-            
+
             {/* Protected routes */}
             <ProtectedRoute path="/" component={Dashboard} />
             <ProtectedRoute path="/groups" component={StudyGroups} />
@@ -33,7 +34,7 @@ function App() {
             <ProtectedRoute path="/tests" component={Tests} />
             <ProtectedRoute path="/leaderboard" component={Leaderboard} />
             <ProtectedRoute path="/settings" component={Settings} />
-            
+
             {/* 404 route */}
             <Route component={NotFound} />
           </Switch>

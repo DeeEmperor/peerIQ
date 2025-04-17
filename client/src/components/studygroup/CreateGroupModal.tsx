@@ -25,7 +25,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -44,7 +50,10 @@ interface CreateGroupModalProps {
   onClose: () => void;
 }
 
-export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalProps) {
+export default function CreateGroupModal({
+  isOpen,
+  onClose,
+}: CreateGroupModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [otherCourse, setOtherCourse] = useState(false);
@@ -68,29 +77,34 @@ export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalPr
         name: values.name,
         description: values.description,
         isPublic: values.isPublic,
-        democratizedApproval: values.democratizedApproval
+        democratizedApproval: values.democratizedApproval,
       };
 
-      const response = await apiRequest('POST', '/api/groups', groupData);
+      const response = await apiRequest("POST", "/api/groups", groupData);
       const newGroup = await response.json();
 
       // If a course was specified, create it
       if (newGroup.id && (values.course || values.otherCourse)) {
-        const courseName = values.course === "other" ? values.otherCourse : values.course;
+        const courseName =
+          values.course === "other" ? values.otherCourse : values.course;
         if (courseName) {
           const courseData = {
             name: courseName,
             description: `Course for ${values.name}`,
             groupId: newGroup.id,
           };
-          await apiRequest('POST', `/api/groups/${newGroup.id}/courses`, courseData);
+          await apiRequest(
+            "POST",
+            `/api/groups/${newGroup.id}/courses`,
+            courseData
+          );
         }
       }
 
       return newGroup;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/groups'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/groups"] });
       toast({
         title: "Success",
         description: "Study group created successfully!",
@@ -130,14 +144,20 @@ export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalPr
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-medium">Create New Study Group</DialogTitle>
+          <DialogTitle className="text-lg font-medium">
+            Create New Study Group
+          </DialogTitle>
           <DialogDescription>
-            Fill in the details to create a new study group. You'll be the Group Lead.
+            Fill in the details to create a new study group. You'll be the Group
+            Lead.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 pt-2"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -145,7 +165,10 @@ export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalPr
                 <FormItem>
                   <FormLabel>Group Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Advanced Physics Study Group" {...field} />
+                    <Input
+                      placeholder="e.g. Advanced Physics Study Group"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,8 +181,8 @@ export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalPr
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Course</FormLabel>
-                  <Select 
-                    onValueChange={handleCourseChange} 
+                  <Select
+                    onValueChange={handleCourseChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -203,7 +226,7 @@ export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalPr
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Tell potential members about this group..."
                       className="resize-none"
                       rows={3}
@@ -262,10 +285,7 @@ export default function CreateGroupModal({ isOpen, onClose }: CreateGroupModalPr
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button 
-                type="submit"
-                disabled={createGroupMutation.isPending}
-              >
+              <Button type="submit" disabled={createGroupMutation.isPending}>
                 {createGroupMutation.isPending && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
